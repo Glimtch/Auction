@@ -1,0 +1,41 @@
+﻿@model IEnumerable<Auction.WEB.Models.DetailedLotViewModel>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Lots on sale</h2>
+
+@using (Ajax.BeginForm("IndexPartial", new AjaxOptions
+{
+    UpdateTargetId = "results",
+    LoadingElementId = "loading",
+    LoadingElementDuration = 0,
+    OnBegin = "OnBegin",
+    OnFailure = "OnFailure"
+}))
+{
+    <div class="form-inline">
+        <p>
+            <input type="text" name="pattern" class="form-control" />
+            <input type="submit" value="Search" class="btn btn-default" />
+        </p>
+        </div>
+        }
+        <img id="loading" src="@Url.Content("~/Content/loading.gif")" style="display:none" />
+
+        <div id="results">@{Html.RenderPartial("IndexPartial", Model);}</div>
+
+@section Scripts
+{
+            @Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.js")
+
+            <script type="text/javascript">
+                function OnBegin() {
+                    $('#results').empty();
+                }
+                function OnFailure(request, error) {
+                    $("#results").html("We're sorry, no lots were found with provided keyword. Maybe the lot you've been searching for was already sold.");
+                }
+            </script>
+ }

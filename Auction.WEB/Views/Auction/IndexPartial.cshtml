@@ -1,0 +1,47 @@
+﻿@model IEnumerable<Auction.WEB.Models.DetailedLotViewModel>
+
+@{
+    if (Model.Count() == 0)
+    {
+        <h3> No lots were found. Maybe the one you are looking for was already sold</h3>
+    }
+}
+
+<table class="table">
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                <img src="@Url.Content("~/Content/no_image.png")" style="max-height:360px; max-width:640px" />
+            </td>
+            <td>
+                <h3>@Html.DisplayFor(modelItem => item.Name)</h3>
+                <div>
+                    @{
+                        if (item.Description == null)
+                        {
+                            <h5>No description avaliable for this lot.</h5>
+                        }
+                        else
+                        {
+                            <h5>@Html.DisplayFor(modelItem => item.Description)</h5>
+                        }
+                    }
+                </div>
+                @Html.ActionLink("View more", "Details", new { id = item.Id })
+            </td>
+            <td>
+                <div>
+                    <p>
+                        <h4>Current price:</h4>
+                        $@Html.DisplayFor(modelItem => item.CurrentPrice)
+                    </p>
+                    <div>
+                        <h4>Expire date:</h4>
+                        @Html.DisplayFor(modelItem => item.ExpireDate)
+                    </div>
+                </div>
+            </td>
+        </tr>
+    }
+</table>
