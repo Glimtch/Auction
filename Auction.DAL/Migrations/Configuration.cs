@@ -20,26 +20,58 @@ namespace Auction.DAL.Migrations
 
         protected override void Seed(AuctionContext context)
         {
-            AuctionRoleManager roleManager = new AuctionRoleManager(new RoleStore<AuctionRole>(context));
+            //AuctionRoleManager roleManager = new AuctionRoleManager(new RoleStore<AuctionRole>(context));
 
-            roleManager.Create(new AuctionRole() { Name = "ceo" });
-            roleManager.Create(new AuctionRole() { Name = "admin" });
-            roleManager.Create(new AuctionRole() { Name = "user" });
+            //roleManager.Create(new AuctionRole() { Name = "ceo" });
+            //roleManager.Create(new AuctionRole() { Name = "admin" });
+            //roleManager.Create(new AuctionRole() { Name = "user" });
 
-            AuctionUserManager userManager = new AuctionUserManager(new UserStore<AuctionUser>(context));
+            //AuctionUserManager userManager = new AuctionUserManager(new UserStore<AuctionUser>(context));
 
-            var user1 = new AuctionUser() { Email = "dragon34@gmail.com", UserName = "dragon34@gmail.com", Nickname = "Dragon34", CreditCardNumber = "5168 8090 0000 0000" };
-            userManager.Create(user1, "Boss(0)");
-            userManager.AddToRole(user1.Id, "ceo");
-            userManager.AddToRole(user1.Id, "admin");
+            //var user1 = new AuctionUser() { Email = "dragon34@gmail.com", UserName = "dragon34@gmail.com", Nickname = "Dragon34", CreditCardNumber = "5168 8090 0000 0000" };
+            //userManager.Create(user1, "Boss(0)");
+            //userManager.AddToRole(user1.Id, "ceo");
+            //userManager.AddToRole(user1.Id, "admin");
 
-            var user2 = new AuctionUser() { Email = "killer@gmail.com", UserName = "killer@gmail.com", Nickname = "Killer Sanya", CreditCardNumber = "5168 1254 1234 4321" };
-            userManager.Create(user2, "Abc=123");
-            userManager.AddToRole(user2.Id, "admin");
+            //var user2 = new AuctionUser() { Email = "killer@gmail.com", UserName = "killer@gmail.com", Nickname = "Killer Sanya", CreditCardNumber = "5168 1254 1234 4321" };
+            //userManager.Create(user2, "Abc=123");
+            //userManager.AddToRole(user2.Id, "admin");
 
-            var user3 = new AuctionUser() { Email = "naberlin@gmail.com", UserName = "naberlin@gmail.com", Nickname = "Thomas the Train", CreditCardNumber = "4790 7000 1488 1221" };
-            userManager.Create(user3, "Choo-400");
-            userManager.AddToRole(user3.Id, "user");
+            //var user3 = new AuctionUser() { Email = "naberlin@gmail.com", UserName = "naberlin@gmail.com", Nickname = "Thomas the Train", CreditCardNumber = "4790 7000 1488 1221" };
+            //userManager.Create(user3, "Choo-400");
+            //userManager.AddToRole(user3.Id, "user");
+
+            //var user4 = new AuctionUser() { Email = "another@user.mail", UserName = "another@user.mail", Nickname = "Another User", CreditCardNumber = "4790 3454 6789 0000" };
+            //userManager.Create(user4, "Pass+1");
+            //userManager.AddToRole(user4.Id, "user");
+
+
+            //AuctionUserManager userManager = new AuctionUserManager(new UserStore<AuctionUser>(context));
+            //var seller = userManager.FindByEmail("naberlin@gmail.com");
+            //var bidder = userManager.FindByEmail("another@user.mail");
+
+            //var lot = new Lot()
+            //{
+            //    Id = 90,
+            //    Name = "Somelot",
+            //    ExpireDate = new DateTime(2018, 08, 23),
+            //    SellerId = seller.Id,
+            //    StartPrice = 5,
+            //    WasBidOn = true
+            //};
+
+            //context.Lots.Add(lot);
+
+            //var bid = new Bid()
+            //{
+            //    Id = 1,
+            //    BidPrice = 10,
+            //    BidderId = bidder.Id
+            //};
+
+            //context.Bids.Add(bid);
+
+           
 
             context.SaveChanges();
         }

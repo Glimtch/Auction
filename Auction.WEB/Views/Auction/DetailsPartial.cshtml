@@ -20,15 +20,17 @@
             <h5>Your bid is highest right now</h5>
         }
         else
-        { 
+        {
             <p>
                 @*      @Html.EditorFor(model => model.NewPrice, new { htmlAttributes = new { @class = "form-control" } })*@
-                <input type="number" step="#.00" name="bid" class="form-control" />
+                <input type="number" step="#.00" name="bid" value="0.00" required="" class="form-control" />
                 @Html.ValidationSummary("", new { @class = "text-danger" })
             </p>
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Bid on this lot" class="btn btn-default" />
             </div>
         }
+        <h4 class="label-info">@ViewBag.Message</h4>
     }
 </div>
+

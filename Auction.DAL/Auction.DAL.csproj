@@ -114,39 +114,15 @@
     <Compile Include="Entities\AuctionUser.cs" />
     <Compile Include="Entities\Bid.cs" />
     <Compile Include="Entities\Lot.cs" />
-    <Compile Include="Migrations\201805141412083_NewMigration1.cs" />
-    <Compile Include="Migrations\201805141412083_NewMigration1.Designer.cs">
-      <DependentUpon>201805141412083_NewMigration1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201805141506175_UserMigration.cs" />
-    <Compile Include="Migrations\201805141506175_UserMigration.Designer.cs">
-      <DependentUpon>201805141506175_UserMigration.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201805141640317_ImageMigration.cs" />
-    <Compile Include="Migrations\201805141640317_ImageMigration.Designer.cs">
-      <DependentUpon>201805141640317_ImageMigration.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201805152024117_UsersMigration.cs" />
-    <Compile Include="Migrations\201805152024117_UsersMigration.Designer.cs">
-      <DependentUpon>201805152024117_UsersMigration.cs</DependentUpon>
+    <Compile Include="Migrations\201805190955555_NewMigration.cs" />
+    <Compile Include="Migrations\201805190955555_NewMigration.Designer.cs">
+      <DependentUpon>201805190955555_NewMigration.cs</DependentUpon>
     </Compile>
     <Compile Include="Repositories\Identity\AuctionRoleManager.cs" />
     <Compile Include="Repositories\Identity\AuctionUserManager.cs" />
     <Compile Include="Interfaces\IAuctionUnitOfWork.cs" />
     <Compile Include="Interfaces\IIdentityUnitOfWork.cs" />
     <Compile Include="Interfaces\IRepository.cs" />
-    <Compile Include="Migrations\201805061127523_InitialCreate.cs" />
-    <Compile Include="Migrations\201805061127523_InitialCreate.Designer.cs">
-      <DependentUpon>201805061127523_InitialCreate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201805132028439_AuctionMigration.cs" />
-    <Compile Include="Migrations\201805132028439_AuctionMigration.Designer.cs">
-      <DependentUpon>201805132028439_AuctionMigration.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201805141234336_NewMigration.cs" />
-    <Compile Include="Migrations\201805141234336_NewMigration.Designer.cs">
-      <DependentUpon>201805141234336_NewMigration.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AuctionUnitOfWork.cs" />
@@ -160,26 +136,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201805061127523_InitialCreate.resx">
-      <DependentUpon>201805061127523_InitialCreate.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201805132028439_AuctionMigration.resx">
-      <DependentUpon>201805132028439_AuctionMigration.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201805141234336_NewMigration.resx">
-      <DependentUpon>201805141234336_NewMigration.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201805141412083_NewMigration1.resx">
-      <DependentUpon>201805141412083_NewMigration1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201805141506175_UserMigration.resx">
-      <DependentUpon>201805141506175_UserMigration.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201805141640317_ImageMigration.resx">
-      <DependentUpon>201805141640317_ImageMigration.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201805152024117_UsersMigration.resx">
-      <DependentUpon>201805152024117_UsersMigration.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201805190955555_NewMigration.resx">
+      <DependentUpon>201805190955555_NewMigration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

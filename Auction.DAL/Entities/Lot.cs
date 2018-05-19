@@ -17,13 +17,13 @@ namespace Auction.DAL.Entities
         public string SellerId { get; set; }
         public virtual AuctionUser Seller { get; set; } 
         public DateTime ExpireDate { get; set; }
-        public int? BidId { get; set; }
+        public bool WasBidOn { get; set; }
         public virtual Bid CurrentBid { get; set; }
         public bool IsSold
         {
             get
             {
-                return (BidId != null && DateTime.Now > ExpireDate);
+                return (WasBidOn && DateTime.Now > ExpireDate);
             }
         }
     }

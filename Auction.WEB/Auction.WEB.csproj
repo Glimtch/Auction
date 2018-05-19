@@ -194,6 +194,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Infrastructure\CreditCardNumberAttribute.cs" />
     <Compile Include="Models\DetailedLotViewModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
     <Compile Include="Models\ProfileViewModel.cs" />
@@ -256,6 +257,8 @@
     <Content Include="Views\Auction\DetailsPartial.cshtml" />
     <Content Include="Views\Auction\IndexPartial.cshtml" />
     <Content Include="Views\Shared\Unknown.cshtml" />
+    <Content Include="Views\Auction\Edit.cshtml" />
+    <Content Include="Views\Auction\Delete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

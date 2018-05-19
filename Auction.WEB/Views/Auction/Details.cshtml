@@ -7,8 +7,7 @@
 }
 
 <h2>@Model.Name</h2>
-<h3>@ViewBag.Message</h3>
-@using (Ajax.BeginForm("DetailsPartial", new { lotJson = JsonConvert.SerializeObject(Model) }, new AjaxOptions
+@using (Ajax.BeginForm("DetailsPartial", new { /*lotJson = JsonConvert.SerializeObject(Model)*/ id = Model.Id, current = Model.CurrentPrice }, new AjaxOptions
 {
     UpdateTargetId = "bidding",
     LoadingElementId = "loading",
@@ -17,10 +16,20 @@
     OnFailure = "OnFailure"
 }))
 {
+    @Html.HiddenFor(model => model.Id)
     <table class="table">
         <tr>
             <td>
-                <img src="@Url.Content("~/Content/no_image.png")" style="max-height:720px; max-width:1280px" />
+                @{
+        if (Model.Image != null)
+        {
+            <img src="data:image/png;base64,@Convert.ToBase64String(Model.Image, 0, Model.Image.Length)" style="max-height:360px; max-width:640px" />
+}
+else
+{
+            <img src="@Url.Content("~/Content/no_image.png")" style="max-height:360px; max-width:640px" />
+}
+                }
             </td>
             <td>
                 <div>
@@ -40,16 +49,21 @@
             <td>
                 <div>
                     <p>
-                        <h4>Seller:</h4>
                         @{
-                            if (Model.SellerId != User.Identity.GetUserId())
-                            {
-                                @Html.ActionLink(Model.SellerNickname, "UserProfile", "Account", new { id = Model.SellerId }, null)
-                            }
-                            else
-                            {
-                                <h5>You are a seller of this lot</h5>
-                            }
+        if (User.IsInRole("admin") || User.Identity.GetUserId() == Model.SellerId)
+        {
+                                <p>
+                    @Html.ActionLink("Edit", "Edit", new { id = Model.Id })
+                                    </p>
+                                    <p>
+                    @Html.ActionLink("Delete", "Delete", new { id = Model.Id })
+                                        </p>
+}
+else
+{
+                    <h4>Seller:</h4>
+                    @Html.ActionLink(Model.SellerNickname, "UserProfile", "Account", new { id = Model.SellerId }, null)
+}
                         }
                     </p>
                 </div>
@@ -86,16 +100,16 @@
 
 @section Scripts
 {
-        @Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.js")
+    @Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.js")
 
-        <script type="text/javascript">
-            function OnBegin() {
-                $('#bidding').empty();
-            }
-            function OnFailure(request, error) {
-                $("#bidding").html("An error occured while bidding.");
-            }
-        </script>
+    <script type="text/javascript">
+        function OnBegin() {
+            $('#bidding').empty();
+        }
+        function OnFailure(request, error) {
+            $("#bidding").html("An error occured while bidding.");
+        }
+    </script>
 
     <script>
         var timeleft = @Html.Raw(Json.Encode(Model.TimeLeft));
@@ -142,13 +156,9 @@
     </script>
 
     <script>
-        $.validator.methods.range = function (value, element, param) {
-            var globalizedValue = value.replace(",", ".");
-            return this.optional(element) || (globalizedValue >= param[0] && globalizedValue <= param[1]);
-        }
-
         $.validator.methods.number = function (value, element) {
-            return this.optional(element) || /^-?(?:\d+|\d{1,3}(?:[\s\.,]\d{3})+)(?:[\.,]\d+)?$/.test(value);
+            var globalizedValue = value.replace(",", ".");
+            return globalizedValue;
         }
     </script>
 }

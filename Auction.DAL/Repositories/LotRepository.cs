@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Data.Entity;
+using System.Data.Entity.Migrations;
 
 namespace Auction.DAL.Repositories
 {
@@ -34,9 +36,10 @@ namespace Auction.DAL.Repositories
                 db.Lots.Remove(lot);
         }
 
-        public Task<Lot> GetByIdAsync(int id)
+        public async Task<Lot> GetByIdAsync(int id)
         {
-            return db.Lots.FindAsync(id);
+            return await db.Lots.AsNoTracking().Where(l => l.Id == id).FirstOrDefaultAsync();
+            return await db.Lots.FindAsync(id);
         }
 
         public IQueryable<Lot> GetAll()
@@ -46,7 +49,8 @@ namespace Auction.DAL.Repositories
 
         public void Update(Lot entity)
         {
-            db.Entry(entity).State = System.Data.Entity.EntityState.Modified;
+            db.Lots.AddOrUpdate(entity);
+            //db.Entry(entity).State = System.Data.Entity.EntityState.Modified;
         }
     }
 }

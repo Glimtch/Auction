@@ -24,14 +24,12 @@ namespace Auction.BLL.Services
 
         public event LotDateExpiringDelegate LotDateExpiring;
 
-        public async Task CreateLotAsync(LotDTO lotDto)
+        public async Task CreateOrUpdateLotAsync(LotDTO lotDto)
         {
             if (lotDto == null)
                 throw new Exception ("Lot provided was null value");
             var (lot, bid) = LotAndBidFromLotDto(lotDto);
-            db.Lots.Add(lot);
-            if (bid != null)
-                db.Bids.Add(bid);
+            db.Lots.Update(lot);
             await db.SaveAsync();
         }
         
@@ -43,12 +41,12 @@ namespace Auction.BLL.Services
         public async Task<IEnumerable<LotDTO>> SearchActiveLotsAsync(string pattern)
         {
             var lotDtos = new List<LotDTO>();
-            await Task.Run(async () =>
+            await Task.Run(() =>
             {
-                var lots = db.Lots.GetAll().Where(l => l.Name.Contains(pattern));
+                var lots = db.Lots.GetAll().Where(l => l.Name.Contains(pattern) && l.ExpireDate > DateTime.Now);
                 foreach (var lot in lots)
                 {
-                    lotDtos.Add(await LotDtoFromLotAsync(lot));
+                    lotDtos.Add(LotDtoFromLot(lot));
                 }
             });
             return lotDtos;
@@ -56,7 +54,7 @@ namespace Auction.BLL.Services
 
         public async Task<LotDTO> GetLotByIdAsync(int id)
         {
-            return await LotDtoFromLotAsync(await db.Lots.GetByIdAsync(id));
+            return LotDtoFromLot(await db.Lots.GetByIdAsync(id));
         }
 
         public async Task<IEnumerable<LotDTO>> GetLotsByBidderAsync(UserDTO user)
@@ -74,20 +72,27 @@ namespace Auction.BLL.Services
             throw new NotImplementedException();
         }
 
-        public async Task UpdateBidAsync(LotDTO lotDto)
+        public async Task<LotDTO> UpdateBidAsync(int lotId, decimal newPrice, string bidderId)
         {
-            if (lotDto == null)
-                throw new ArgumentNullException("Provided lot was null value");
-            var lot = await db.Lots.GetByIdAsync(lotDto.Id);
+            var lot = await db.Lots.GetByIdAsync(lotId);
             if (lot == null)
                 throw new ArgumentException("A lot with current id does not exist");
-            if (lot.BidId != null && 
-                lotDto.CurrentPrice <= (await db.Bids.GetByIdAsync((int)lot.BidId)).BidPrice)
+            if (lot.WasBidOn &&
+                newPrice <= (await db.Bids.GetByIdAsync(lot.Id)).BidPrice)
                 throw new Exception("Cannot perform a bid with price lower than current");
-            if(string.IsNullOrEmpty(lotDto.BidderId))
+            if (string.IsNullOrEmpty(bidderId))
                 throw new ArgumentNullException("Bidder id provided was null value");
-            Bid bid = new Bid() { LotId = lotDto.Id, BidderId = lotDto.BidderId, BidPrice = lotDto.CurrentPrice };
-            db.Bids.Add(bid);
+            var bid = new Bid() { Id = lotId, BidPrice = newPrice, BidderId = bidderId };
+            lot.WasBidOn = true;
+            db.Lots.Update(lot);
+            db.Bids.Update(bid);
+            await db.SaveAsync();
+            return LotDtoFromLot(lot);
+        }
+
+        public async Task DeleteLotAsync(int id)
+        {
+            db.Lots.Delete(id);
             await db.SaveAsync();
         }
 
@@ -96,16 +101,15 @@ namespace Auction.BLL.Services
             db.Dispose();
         }
 
-        private async Task<LotDTO> LotDtoFromLotAsync(Lot lot)
+        private LotDTO LotDtoFromLot(Lot lot)
         {
             if (lot == null)
                 return null;
             var lotDto = new LotDTO() { Id = lot.Id, Name = lot.Name, Description = lot.Description, Image = lot.Image, ExpireDate = lot.ExpireDate, SellerId = lot.SellerId, StartPrice = lot.StartPrice, IsSold = lot.IsSold };
-            if (lot.BidId != null)
+            if (lot.WasBidOn)
             {
-                var bid = await db.Bids.GetByIdAsync((int)lot.BidId);
-                lotDto.CurrentPrice = bid.BidPrice;
-                lotDto.BidderId = bid.BidderId;
+                lotDto.CurrentPrice = lot.CurrentBid.BidPrice;
+                lotDto.BidderId = lot.CurrentBid.BidderId;
             }
             else
             {
@@ -120,7 +124,8 @@ namespace Auction.BLL.Services
             Bid bid = null;
             if (lotDto.BidderId != null)
             {
-                bid = new Bid() { LotId = lotDto.Id, BidderId = lotDto.BidderId, BidPrice = lotDto.CurrentPrice };
+                bid = new Bid() { Id = lotDto.Id, BidderId = lotDto.BidderId, BidPrice = lotDto.CurrentPrice };
+                lot.WasBidOn = true;
             }
             return (lot, bid);
         }

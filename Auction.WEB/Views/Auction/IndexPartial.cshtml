@@ -12,7 +12,16 @@
     {
         <tr>
             <td>
-                <img src="@Url.Content("~/Content/no_image.png")" style="max-height:360px; max-width:640px" />
+                @{ 
+                    if (item.Image != null)
+                    {
+                        <img src="data:image/png;base64,@Convert.ToBase64String(item.Image, 0, item.Image.Length)" style="max-height:180px; max-width:320px" />
+                    }
+                    else
+                    { 
+                        <img src="@Url.Content("~/Content/no_image.png")" style="max-height:180px; max-width:320px" />
+                    }
+                }
             </td>
             <td>
                 <h3>@Html.DisplayFor(modelItem => item.Name)</h3>

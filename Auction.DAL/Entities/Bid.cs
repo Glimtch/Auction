@@ -11,7 +11,6 @@ namespace Auction.DAL.Entities
     {
         public int Id { get; set; }
         
-        public int LotId { get; set; }
         public virtual Lot Lot { get; set; }
         public string BidderId { get; set; }
         public virtual AuctionUser Bidder { get; set; }

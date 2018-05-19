@@ -77,21 +77,34 @@ namespace Auction.WEB.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateLot(RegisterLotViewModel lot/*, HttpPostedFile image*/)
+        public async Task<ActionResult> CreateLot(RegisterLotViewModel lot)
         {
-            //if (image != null)
-            //{
-            //    lot.Image = new byte[image.ContentLength];
-            //    image.InputStream.Read(lot.Image, 0, image.ContentLength);
-            //}
+            if (lot.ImageFile != null)
+            {
+                if (lot.ImageFile.ContentLength > (2 * 1024 * 1024))
+                {
+                    ModelState.AddModelError("ImageFile", "File size must be less than 2 MB");
+                    return View();
+                }
+                if (!(lot.ImageFile.ContentType == "image/jpeg" || lot.ImageFile.ContentType == "image/gif"))
+                {
+                    ModelState.AddModelError("ImageFile", "File type allowed : jpeg and gif");
+                    return View();
+                }
+
+                byte[] data = new byte[lot.ImageFile.ContentLength];
+                lot.ImageFile.InputStream.Read(data, 0, lot.ImageFile.ContentLength);
+                lot.Image = data;
+            }
+
             DateTime expire = lot.ExpireDate;
             expire += lot.ExpireTime.TimeOfDay;
-            if (expire < DateTime.Now + new TimeSpan(24, 0, 0))
+            if (expire < DateTime.Now + new TimeSpan(0, 0, 0))
             {
                 ModelState.AddModelError("ExpireDate", "Expire date and time must be more than 24 hours from now");
                 return View(lot);
             }
-            await lotsService.CreateLotAsync(new LotDTO()
+            await lotsService.CreateOrUpdateLotAsync(new LotDTO()
             {
                 Name = lot.Name,
                 Description = lot.Description,
@@ -117,36 +130,137 @@ namespace Auction.WEB.Controllers
                 CurrentPrice = lotDto.CurrentPrice,
                 SellerId = lotDto.SellerId,
                 SellerNickname = (await usersService.GetUserByIdAsync(lotDto.SellerId)).Nickname,
-                ExpireDate = lotDto.ExpireDate
+                ExpireDate = lotDto.ExpireDate,
+                BidderId = lotDto.BidderId
             });
         }
 
         [HttpPost]
-        public async Task<ActionResult> DetailsPartial(string lotJson, decimal bid)
+        public async Task<ActionResult> DetailsPartial(int id, decimal current, decimal? bid)
         {
-            var lot = JsonConvert.DeserializeObject<DetailedLotViewModel>(lotJson);
-            if (bid <= lot.CurrentPrice)
+            LotDTO lotDto = null;
+            if (bid == null || bid <= current)
             {
                 ModelState.AddModelError("", "Bid price must be more than current");
             }
-            else if(bid > 1000000)
+            else if (bid > 1000000)
             {
                 ModelState.AddModelError("", "Bid price cannot be higher than $1'000'000");
             }
             else
             {
-                lot.CurrentPrice = bid;
-                lot.BidderId = User.Identity.GetUserId();
-                await lotsService.UpdateBidAsync(
-                    new LotDTO()
-                    {
-                        Id = lot.Id,
-                        CurrentPrice = lot.CurrentPrice,
-                        BidderId = lot.BidderId
-                    });
-                ViewBag.Message = "Bid successfuly made!";
+                try
+                {
+                    lotDto = await lotsService.UpdateBidAsync(id, (decimal)bid, User.Identity.GetUserId());
+                    ViewBag.Message = "Bid successfuly made!";
+                }
+                catch (Exception e)
+                {
+                    ViewBag.Message = e.Message;
+                }
             }
-            return PartialView("DetailsPartial", lot);
+            if (lotDto == null)
+                lotDto = await lotsService.GetLotByIdAsync(id);
+            return PartialView("DetailsPartial", new DetailedLotViewModel()
+            {
+                Id = lotDto.Id,
+                Name = lotDto.Name,
+                Description = lotDto.Description,
+                Image = lotDto.Image,
+                StartPrice = lotDto.StartPrice,
+                CurrentPrice = lotDto.CurrentPrice,
+                SellerId = lotDto.SellerId,
+                SellerNickname = (await usersService.GetUserByIdAsync(lotDto.SellerId)).Nickname,
+                ExpireDate = lotDto.ExpireDate,
+                BidderId = lotDto.BidderId
+            });
+        }
+
+        [Authorize]
+        public async Task<ActionResult> Edit(int id)
+        {
+            var lotDto = await lotsService.GetLotByIdAsync(id);
+            if (!User.IsInRole("admin") && User.Identity.GetUserId() != lotDto.SellerId)
+                return RedirectToActionPermanent("Details", new { id = id });
+            return View(new DetailedLotViewModel()
+            {
+                Id = lotDto.Id,
+                Name = lotDto.Name,
+                Description = lotDto.Description,
+                Image = lotDto.Image,
+                StartPrice = lotDto.StartPrice,
+                CurrentPrice = lotDto.CurrentPrice,
+                SellerId = lotDto.SellerId,
+                ExpireDate = lotDto.ExpireDate,
+                BidderId = lotDto.BidderId
+            });
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Edit(DetailedLotViewModel lot)
+        {
+            if (lot.ImageFile != null)
+            {
+                if (lot.ImageFile.ContentLength > (2 * 1024 * 1024))
+                {
+                    ModelState.AddModelError("ImageFile", "File size must be less than 2 MB");
+                    return View(lot);
+                }
+                if (!(lot.ImageFile.ContentType == "image/jpeg" || lot.ImageFile.ContentType == "image/gif"))
+                {
+                    ModelState.AddModelError("ImageFile", "File type allowed : jpeg and gif");
+                    return View(lot);
+                }
+
+                byte[] data = new byte[lot.ImageFile.ContentLength];
+                lot.ImageFile.InputStream.Read(data, 0, lot.ImageFile.ContentLength);
+                lot.Image = data;
+            }
+
+            await lotsService.CreateOrUpdateLotAsync(new LotDTO()
+            {
+                Id = lot.Id,
+                Name = lot.Name,
+                Description = lot.Description,
+                BidderId = lot.BidderId,
+                CurrentPrice = lot.CurrentPrice,
+                Image = lot.Image,
+                ExpireDate = lot.ExpireDate,
+                StartPrice = lot.StartPrice,
+                SellerId = lot.SellerId
+            });
+            return RedirectToAction("Details", new { id = lot.Id });
+        }
+
+        [Authorize]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var lotDto = await lotsService.GetLotByIdAsync(id);
+            if (!User.IsInRole("admin") && User.Identity.GetUserId() != lotDto.SellerId)
+                return RedirectToActionPermanent("Details", new { id = id });
+            return View(new DetailedLotViewModel()
+            {
+                Id = lotDto.Id,
+                Name = lotDto.Name,
+                Description = lotDto.Description,
+                Image = lotDto.Image,
+                CurrentPrice = lotDto.CurrentPrice,
+                ExpireDate = lotDto.ExpireDate
+            });
+        }
+
+        [HttpPost, ActionName("Delete")]
+        public async Task<ActionResult> DeleteConfirmed(int id)
+        {
+            try
+            {
+                await lotsService.DeleteLotAsync(id);
+            }
+            catch (Exception e)
+            {
+
+            }
+            return RedirectToAction("Index");
         }
     }
 }
