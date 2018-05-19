@@ -15,9 +15,12 @@ namespace Auction.WEB.Models
         public string Description { get; set; }
 
         public byte[] Image { get; set; }
+<<<<<<< HEAD
         
         [Display(Name = "Image")]
         public HttpPostedFileBase ImageFile { get; set; }
+=======
+>>>>>>> 22b2c0b5690e3f3d5887113ec81c9842a533e78d
 
         [Required(ErrorMessage = "Starting price is required")]
         [Display(Name = "Starting Price*")]

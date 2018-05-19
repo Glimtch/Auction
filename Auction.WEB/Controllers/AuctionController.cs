@@ -136,10 +136,17 @@ namespace Auction.WEB.Controllers
         }
 
         [HttpPost]
+<<<<<<< HEAD
         public async Task<ActionResult> DetailsPartial(int id, decimal current, decimal? bid)
         {
             LotDTO lotDto = null;
             if (bid == null || bid <= current)
+=======
+        public async Task<ActionResult> DetailsPartial(string lotJson, decimal? bid)
+        {
+            var lot = JsonConvert.DeserializeObject<DetailedLotViewModel>(lotJson);
+            if (bid == null || bid <= lot.CurrentPrice)
+>>>>>>> 22b2c0b5690e3f3d5887113ec81c9842a533e78d
             {
                 ModelState.AddModelError("", "Bid price must be more than current");
             }
@@ -149,12 +156,35 @@ namespace Auction.WEB.Controllers
             }
             else
             {
+<<<<<<< HEAD
                 try
                 {
                     lotDto = await lotsService.UpdateBidAsync(id, (decimal)bid, User.Identity.GetUserId());
                     ViewBag.Message = "Bid successfuly made!";
                 }
                 catch (Exception e)
+=======
+                lot.CurrentPrice = (decimal)bid;
+                lot.BidderId = User.Identity.GetUserId();
+                try
+                {
+                    await lotsService.UpdateBidAsync(
+                        new LotDTO()
+                        {
+                            Id = lot.Id,
+                            Name = lot.Name,
+                            Description = lot.Description,
+                            Image = lot.Image,
+                            StartPrice = lot.StartPrice,
+                            SellerId = lot.SellerId,
+                            ExpireDate = lot.ExpireDate,
+                            CurrentPrice = lot.CurrentPrice,
+                            BidderId = lot.BidderId
+                        });
+                    ViewBag.Message = "Bid successfuly made!";
+                }
+                catch(Exception e)
+>>>>>>> 22b2c0b5690e3f3d5887113ec81c9842a533e78d
                 {
                     ViewBag.Message = e.Message;
                 }

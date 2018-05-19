@@ -29,7 +29,13 @@ namespace Auction.BLL.Services
             if (lotDto == null)
                 throw new Exception ("Lot provided was null value");
             var (lot, bid) = LotAndBidFromLotDto(lotDto);
+<<<<<<< HEAD
             db.Lots.Update(lot);
+=======
+            db.Lots.Add(lot);
+            if (bid != null)
+                db.Bids.Update(bid);
+>>>>>>> 22b2c0b5690e3f3d5887113ec81c9842a533e78d
             await db.SaveAsync();
         }
         
@@ -46,7 +52,12 @@ namespace Auction.BLL.Services
                 var lots = db.Lots.GetAll().Where(l => l.Name.Contains(pattern) && l.ExpireDate > DateTime.Now);
                 foreach (var lot in lots)
                 {
+<<<<<<< HEAD
                     lotDtos.Add(LotDtoFromLot(lot));
+=======
+                    if (!lot.IsSold)
+                        lotDtos.Add(await LotDtoFromLotAsync(lot));
+>>>>>>> 22b2c0b5690e3f3d5887113ec81c9842a533e78d
                 }
             });
             return lotDtos;
@@ -77,11 +88,17 @@ namespace Auction.BLL.Services
             var lot = await db.Lots.GetByIdAsync(lotId);
             if (lot == null)
                 throw new ArgumentException("A lot with current id does not exist");
+<<<<<<< HEAD
             if (lot.WasBidOn &&
                 newPrice <= (await db.Bids.GetByIdAsync(lot.Id)).BidPrice)
+=======
+            if (lot.WasBidOn && 
+                lotDto.CurrentPrice <= (await db.Bids.GetByIdAsync(lot.Id)).BidPrice)
+>>>>>>> 22b2c0b5690e3f3d5887113ec81c9842a533e78d
                 throw new Exception("Cannot perform a bid with price lower than current");
             if (string.IsNullOrEmpty(bidderId))
                 throw new ArgumentNullException("Bidder id provided was null value");
+<<<<<<< HEAD
             var bid = new Bid() { Id = lotId, BidPrice = newPrice, BidderId = bidderId };
             lot.WasBidOn = true;
             db.Lots.Update(lot);
@@ -93,6 +110,11 @@ namespace Auction.BLL.Services
         public async Task DeleteLotAsync(int id)
         {
             db.Lots.Delete(id);
+=======
+            var (newLot, bid) = LotAndBidFromLotDto(lotDto);
+            db.Lots.Update(newLot);
+            db.Bids.Update(bid);
+>>>>>>> 22b2c0b5690e3f3d5887113ec81c9842a533e78d
             await db.SaveAsync();
         }
 
@@ -108,8 +130,14 @@ namespace Auction.BLL.Services
             var lotDto = new LotDTO() { Id = lot.Id, Name = lot.Name, Description = lot.Description, Image = lot.Image, ExpireDate = lot.ExpireDate, SellerId = lot.SellerId, StartPrice = lot.StartPrice, IsSold = lot.IsSold };
             if (lot.WasBidOn)
             {
+<<<<<<< HEAD
                 lotDto.CurrentPrice = lot.CurrentBid.BidPrice;
                 lotDto.BidderId = lot.CurrentBid.BidderId;
+=======
+                var bid = await db.Bids.GetByIdAsync(lot.Id);
+                lotDto.CurrentPrice = bid.BidPrice;
+                lotDto.BidderId = bid.BidderId;
+>>>>>>> 22b2c0b5690e3f3d5887113ec81c9842a533e78d
             }
             else
             {

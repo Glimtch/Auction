@@ -17,9 +17,12 @@ namespace Auction.WEB.Models
 
         public byte[] Image { get; set; }
 
+<<<<<<< HEAD
         [Display(Name = "Image")]
         public HttpPostedFileBase ImageFile { get; set; }
 
+=======
+>>>>>>> 22b2c0b5690e3f3d5887113ec81c9842a533e78d
         [Required]
         [Display(Name = "Starting Price")]
         [DisplayFormat(DataFormatString = "{0:0.00}", ApplyFormatInEditMode = true)]
@@ -29,6 +32,12 @@ namespace Auction.WEB.Models
         [DisplayFormat(DataFormatString = "{0:0.00}", ApplyFormatInEditMode = true)]
         public decimal CurrentPrice { get; set; }
 
+<<<<<<< HEAD
+=======
+        [DisplayFormat(DataFormatString = "{0:0.00}", ApplyFormatInEditMode = true)]
+        public decimal NewPrice { get; set; }
+
+>>>>>>> 22b2c0b5690e3f3d5887113ec81c9842a533e78d
         public string SellerId { get; set; }
 
         public string SellerNickname { get; set; }
