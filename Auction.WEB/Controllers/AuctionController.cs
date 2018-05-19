@@ -117,15 +117,16 @@ namespace Auction.WEB.Controllers
                 CurrentPrice = lotDto.CurrentPrice,
                 SellerId = lotDto.SellerId,
                 SellerNickname = (await usersService.GetUserByIdAsync(lotDto.SellerId)).Nickname,
-                ExpireDate = lotDto.ExpireDate
+                ExpireDate = lotDto.ExpireDate,
+                BidderId = lotDto.BidderId
             });
         }
 
         [HttpPost]
-        public async Task<ActionResult> DetailsPartial(string lotJson, decimal bid)
+        public async Task<ActionResult> DetailsPartial(string lotJson, decimal? bid)
         {
             var lot = JsonConvert.DeserializeObject<DetailedLotViewModel>(lotJson);
-            if (bid <= lot.CurrentPrice)
+            if (bid == null || bid <= lot.CurrentPrice)
             {
                 ModelState.AddModelError("", "Bid price must be more than current");
             }
@@ -135,16 +136,29 @@ namespace Auction.WEB.Controllers
             }
             else
             {
-                lot.CurrentPrice = bid;
+                lot.CurrentPrice = (decimal)bid;
                 lot.BidderId = User.Identity.GetUserId();
-                await lotsService.UpdateBidAsync(
-                    new LotDTO()
-                    {
-                        Id = lot.Id,
-                        CurrentPrice = lot.CurrentPrice,
-                        BidderId = lot.BidderId
-                    });
-                ViewBag.Message = "Bid successfuly made!";
+                try
+                {
+                    await lotsService.UpdateBidAsync(
+                        new LotDTO()
+                        {
+                            Id = lot.Id,
+                            Name = lot.Name,
+                            Description = lot.Description,
+                            Image = lot.Image,
+                            StartPrice = lot.StartPrice,
+                            SellerId = lot.SellerId,
+                            ExpireDate = lot.ExpireDate,
+                            CurrentPrice = lot.CurrentPrice,
+                            BidderId = lot.BidderId
+                        });
+                    ViewBag.Message = "Bid successfuly made!";
+                }
+                catch(Exception e)
+                {
+                    ViewBag.Message = e.Message;
+                }
             }
             return PartialView("DetailsPartial", lot);
         }

@@ -12,23 +12,32 @@ namespace Auction.WEB.Models
 
         [Required]
         public string Name { get; set; }
+
         public string Description { get; set; }
+
         public byte[] Image { get; set; }
+
         [Required]
         [Display(Name = "Starting Price")]
         [DisplayFormat(DataFormatString = "{0:0.00}", ApplyFormatInEditMode = true)]
         public decimal StartPrice { get; set; }
+
         [Required]
         [DisplayFormat(DataFormatString = "{0:0.00}", ApplyFormatInEditMode = true)]
         public decimal CurrentPrice { get; set; }
+
         [DisplayFormat(DataFormatString = "{0:0.00}", ApplyFormatInEditMode = true)]
         public decimal NewPrice { get; set; }
+
         public string SellerId { get; set; }
+
         public string SellerNickname { get; set; }
+
         [Required]
         [Display(Name = "Expire date")]
         [DisplayFormat(DataFormatString = "{0:dd'/'MM'/'yyyy}", ApplyFormatInEditMode = true)]
         public DateTime ExpireDate { get; set; }
+
         [Display(Name = "Time left")]
         public TimeSpan TimeLeft
         {
@@ -37,6 +46,7 @@ namespace Auction.WEB.Models
                 return ExpireDate - DateTime.Now;
             }
         }
+
         public string BidderId { get; set; }
     }
 }

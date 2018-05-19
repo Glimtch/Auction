@@ -8,9 +8,11 @@ namespace Auction.WEB.Models
 {
     public class LoginViewModel
     {
-        [Required]
+        [Required(ErrorMessage = "Login is required")]
+        [EmailAddress(ErrorMessage = "Invalid email adress")]
         public string Email { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "Password is required")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
     }
