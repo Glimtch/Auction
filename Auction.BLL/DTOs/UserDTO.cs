@@ -14,5 +14,7 @@ namespace Auction.BLL.DTOs
         public string Nickname { get; set; }
         public string CreditCardNumber { get; set; }
         public IEnumerable<string> Roles { get; set; }
+        public IEnumerable<LotDTO> SoldLots { get; set; }
+        public IEnumerable<LotDTO> WonBids { get; set; }
     }
 }

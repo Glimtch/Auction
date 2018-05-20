@@ -1,4 +1,5 @@
 ﻿using Auction.BLL.DTOs;
+using Auction.BLL.Exceptions;
 using Auction.BLL.Infrastructure;
 using Auction.BLL.Interfaces;
 using Auction.WEB.Models;
@@ -12,6 +13,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using Auction.WEB.Services;
 
 namespace Auction.WEB.Controllers
 {
@@ -42,22 +44,25 @@ namespace Auction.WEB.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel model)
         {
+            if (model == null)
+                return HttpNotFound();
+
             if (ModelState.IsValid)
             {
                 UserDTO userDto = new UserDTO { Email = model.Email, Password = model.Password };
-                ClaimsIdentity claim = await UserService.AuthenticateAsync(userDto);
-                if (claim == null)
+                try
                 {
-                    ModelState.AddModelError("", "Incorrect login or password.");
-                }
-                else
-                {
+                    ClaimsIdentity claim = await UserService.AuthenticateAsync(userDto);
                     AuthenticationManager.SignOut();
                     AuthenticationManager.SignIn(new AuthenticationProperties
                     {
                         IsPersistent = true
                     }, claim);
                     return RedirectToAction("Index", "Home");
+                }
+                catch(UsersManagementException e)
+                {
+                    ModelState.AddModelError("", e.Message);
                 }
             }
             return View(model);
@@ -78,6 +83,9 @@ namespace Auction.WEB.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
+            if (model == null)
+                return HttpNotFound();
+            
             if (ModelState.IsValid)
             {
                 UserDTO userDto = new UserDTO
@@ -93,7 +101,7 @@ namespace Auction.WEB.Controllers
                     await UserService.CreateAsync(userDto);
                     return RedirectToAction("Login");
                 }
-                catch (Exception e)
+                catch (UsersManagementException e)
                 {
                     ModelState.AddModelError("", e.Message);
                 }
@@ -101,17 +109,73 @@ namespace Auction.WEB.Controllers
             return View(model);
         }
 
-        public ActionResult MyProfile()
+        [Authorize]
+        public async Task<ActionResult> UserProfile(string id)
         {
-            return RedirectToAction("UserProfile", new { userName = User.Identity.Name });
+            if (id == null)
+                return HttpNotFound();
+            try
+            {
+                var user = await UserService.GetUserByIdAsync(id);
+                var sold = new List<DetailedLotViewModel>();
+                var won = new List<DetailedLotViewModel>();
+
+                foreach (var lotDto in user.SoldLots)
+                {
+                    sold.Add(LotViewModelsMapper.DetailedLotFromLotDTO(lotDto));
+                }
+                foreach(var lotDto in user.WonBids)
+                {
+                    won.Add(LotViewModelsMapper.DetailedLotFromLotDTO(lotDto));
+                }
+
+                return View(new ProfileViewModel()
+                {
+                    Id = user.Id,
+                    Nickname = user.Nickname,
+                    Email = user.Email,
+                    CreditCardNumber = user.CreditCardNumber,
+                    Roles = user.Roles,
+                    SoldLots = sold,
+                    WonBids = won
+                });
+            }
+            catch(UsersManagementException)
+            {
+                return HttpNotFound();
+            }
         }
 
-        public async Task<ActionResult> UserProfile(string userName)
+        [HttpPost]
+        public async Task<ActionResult> SetToAdmin(string id)
         {
-            var user = await UserService.GetUserByIdAsync(userName);
-            if (user == null)
-                user = new UserDTO() { Nickname = "Unknown", Email = "Unknown@m.m", CreditCardNumber = "Unknown" };
-            return View(new ProfileViewModel() { Nickname = user.Nickname, Email = user.Email, CreditCardNumber = user.CreditCardNumber });
+            if (id == null)
+                return HttpNotFound();
+            try
+            {
+                await UserService.ChangeUserRole(id, "user", "admin");
+            }
+            catch(UsersManagementException e)
+            {
+                ViewBag.Message = e;
+            }
+            return RedirectToAction("UserProfile", new { id = id });
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> SetToUser(string id)
+        {
+            if (id == null)
+                return HttpNotFound();
+            try
+            {
+                await UserService.ChangeUserRole(id, "admin", "user");
+            }
+            catch (UsersManagementException e)
+            {
+                ViewBag.Message = e;
+            }
+            return RedirectToAction("UserProfile", new { id = id });
         }
     }
 }

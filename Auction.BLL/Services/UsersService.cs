@@ -1,4 +1,5 @@
 ﻿using Auction.BLL.DTOs;
+using Auction.BLL.Exceptions;
 using Auction.BLL.Infrastructure;
 using Auction.BLL.Interfaces;
 using Auction.DAL.Entities;
@@ -16,51 +17,112 @@ namespace Auction.BLL.Services
     public class UsersService : IUsersService
     {
         IIdentityUnitOfWork db;
-
+        
+        /// <summary>
+        /// Provides functionality for registering, authenticating, and finding users.
+        /// </summary>
         public UsersService(IIdentityUnitOfWork uow)
         {
             db = uow;
         }
 
+        /// <summary>
+        /// Creates a user, if it does not exist.
+        /// </summary>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="UsersManagementException"></exception>
         public async Task CreateAsync(UserDTO userDto)
         {
+            if (userDto == null)
+                throw new ArgumentNullException("User provided was null value");
             AuctionUser user = await db.UserManager.FindByEmailAsync(userDto.Email);
-            if (user == null)
+            if (user != null)
+                throw new UsersManagementException("User with provided login already exists");
+            user = new AuctionUser { Email = userDto.Email, UserName = userDto.Email, Nickname = userDto.Nickname, CreditCardNumber = userDto.CreditCardNumber };
+            var result = await db.UserManager.CreateAsync(user, userDto.Password);
+            if (result.Errors.Count() > 0)
+                throw new UsersManagementException(result.Errors.FirstOrDefault());
+            foreach (var role in userDto.Roles)
             {
-                user = new AuctionUser { Email = userDto.Email, UserName = userDto.Email, Nickname = userDto.Nickname, CreditCardNumber = userDto.CreditCardNumber };
-                var result = await db.UserManager.CreateAsync(user, userDto.Password);
-                if (result.Errors.Count() > 0)
-                    throw new Exception(result.Errors.FirstOrDefault());
-                foreach (var role in userDto.Roles)
-                {
-                    await db.UserManager.AddToRoleAsync(user.Id, role);
-                }
-                await db.SaveAsync();
+                await db.UserManager.AddToRoleAsync(user.Id, role);
             }
-            else
-            {
-                throw new ArgumentException("User with provided login already exists");
-            }
+            await db.SaveAsync();
         }
 
+        /// <summary>
+        /// Authenticates a user, if exists.
+        /// </summary>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="UsersManagementException"></exception>
+        /// <returns>
+        /// Claims identity of the authenticated user.
+        /// </returns>
         public async Task<ClaimsIdentity> AuthenticateAsync(UserDTO userDto)
         {
-            ClaimsIdentity claim = null;
+            if(userDto == null)
+                throw new ArgumentNullException("User provided was null value");;
             AuctionUser user = await db.UserManager.FindAsync(userDto.Email, userDto.Password);
-            if (user != null)
-                claim = await db.UserManager.CreateIdentityAsync(user,
-                                            DefaultAuthenticationTypes.ApplicationCookie);
-            return claim;
+            if (user == null)
+                throw new UsersManagementException("A user with current login and password does not exist");
+            return await db.UserManager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);
         }
 
+        /// <summary>
+        /// Returns a user, if it exists.
+        /// </summary>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="UsersManagementException"></exception>
         public async Task<UserDTO> GetUserByIdAsync(string id)
         {
             if (id == null)
                 throw new ArgumentNullException("Id provided was null value");
             var user = await db.UserManager.FindByIdAsync(id);
             if (user == null)
-                return null;
-            return new UserDTO() { Id = user.Id, Nickname = user.Nickname, CreditCardNumber = user.CreditCardNumber, Email = user.Email, Roles = db.UserManager.GetRoles(user.Id) };
+                throw new UsersManagementException("A user with current id does not exist");
+            var sold = new List<LotDTO>();
+            var won = new List<LotDTO>();
+            foreach(var lot in user.Lots)
+            {
+                if (lot.State == LotState.Sold)
+                    sold.Add(LotDTOsMapper.LotDtoFromLot(lot));
+            }
+            foreach(var bid in user.Bids)
+            {
+                if(bid.Lot.State == LotState.Sold)
+                    won.Add(LotDTOsMapper.LotDtoFromLot(bid.Lot));
+            }
+            return new UserDTO()
+            {
+                Id = user.Id,
+                Nickname = user.Nickname,
+                CreditCardNumber = user.CreditCardNumber,
+                Email = user.Email,
+                Roles = db.UserManager.GetRoles(user.Id),
+                SoldLots = sold,
+                WonBids = won
+            };
+        }
+
+        /// <summary>
+        /// Sets new role to a user and remove and old one, if all of them exist.
+        /// </summary>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="UsersManagementException"></exception>
+        public async Task ChangeUserRole(string id, string oldRole, string newRole)
+        {
+            if (id == null)
+                throw new ArgumentNullException("Id provided was null value");
+            var user = await db.UserManager.FindByIdAsync(id);
+            if (user == null)
+                throw new UsersManagementException("A user with current id does not exist");
+            if (!(await db.RoleManager.RoleExistsAsync(oldRole)) ||
+                !(await db.RoleManager.RoleExistsAsync(newRole)))
+            {
+                throw new UsersManagementException("One or more roles provided does not exist");
+            }
+            await db.UserManager.AddToRoleAsync(id, newRole);
+            await db.UserManager.RemoveFromRoleAsync(id, oldRole);
+            await db.SaveAsync();
         }
 
         public void Dispose()

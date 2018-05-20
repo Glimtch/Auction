@@ -10,16 +10,16 @@ namespace Auction.DAL.Entities
 {
     public class AuctionUser : IdentityUser
     {
-        public virtual ICollection<Lot> ActiveLots { get; set; }
-        public virtual ICollection<Bid> ActiveBids { get; set; }
+        public virtual ICollection<Lot> Lots { get; set; }
+        public virtual ICollection<Bid> Bids { get; set; }
 
         public string Nickname { get; set; }
         public string CreditCardNumber { get; set; }
 
         public AuctionUser()
         {
-            ActiveLots = new List<Lot>();
-            ActiveBids = new List<Bid>();
+            Lots = new List<Lot>();
+            Bids = new List<Bid>();
         }
     }
 }
