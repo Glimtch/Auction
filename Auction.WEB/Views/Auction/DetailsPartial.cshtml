@@ -7,30 +7,65 @@
         $@Html.DisplayFor(model => model.CurrentPrice)
     </p>
     @{
-        if (!User.IsInRole("user"))
+        if (Model.TimeLeft > new TimeSpan(0))
         {
-            <h5>Only users can bid on lots</h5>
-        }
-        else if (Model.SellerId == User.Identity.GetUserId())
-        {
-            <h5>You cannot bid on your own lot</h5>
-        }
-        else if (Model.BidderId == User.Identity.GetUserId())
-        {
-            <h5>Your bid is highest right now</h5>
+
+            if (!User.IsInRole("user"))
+            {
+                <h5>Only users can bid on lots</h5>
+            }
+            else if (Model.SellerId == User.Identity.GetUserId())
+            {
+                <h5>You cannot bid on your own lot</h5>
+            }
+            else if (Model.BidderId == User.Identity.GetUserId())
+            {
+                <h5>Your bid is highest right now</h5>
+            }
+            else
+            {
+                <p>
+                    <input type="number" step="#.00" name="bid" value="0.00" required="" class="form-control" />
+                    @Html.ValidationSummary("", new { @class = "text-danger" })
+                </p>
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Bid on this lot" class="btn btn-default" />
+                </div>
+            }
+            <h4 class="label-info">@ViewBag.Message</h4>
         }
         else
         {
-            <p>
-                @*      @Html.EditorFor(model => model.NewPrice, new { htmlAttributes = new { @class = "form-control" } })*@
-                <input type="number" step="#.00" name="bid" value="0.00" required="" class="form-control" />
-                @Html.ValidationSummary("", new { @class = "text-danger" })
-            </p>
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Bid on this lot" class="btn btn-default" />
-            </div>
+            if (Model.SellerId == User.Identity.GetUserId())
+            {
+                if (Model.BidderId != null)
+                {
+                    <h5>Congratulations on selling this!</h5>
+                    <h6>Hope we can help you get rid of other stuff soon :)</h6>
+                }
+                else
+                {
+                    <h5>Sorry, but noone was interested in you lot. Maybe next time is your lucky time?</h5>
+                }
+            }
+            else if (Model.BidderId == User.Identity.GetUserId())
+            {
+                <h5>Congratulations on your purchase!</h5>
+                <h6>Hope we can provide you with more stuff soon :)</h6>
+            }
+            else
+            {
+                <h5>This lot has been already sold or expired.</h5>
+            }
+
+            if(Model.BidderId != null && 
+                (Model.SellerId == User.Identity.GetUserId() || User.IsInRole("admin")))
+            {
+                <p>
+                    @Html.ActionLink("Check out buyer's page", "UserProfile", "Account", new { id = Model.BidderId }, null);
+                </p>
+            }
         }
-        <h4 class="label-info">@ViewBag.Message</h4>
     }
 </div>
 

@@ -6,8 +6,8 @@
     ViewBag.Title = "Details";
 }
 
-<h2>@Model.Name</h2>
-@using (Ajax.BeginForm("DetailsPartial", new { /*lotJson = JsonConvert.SerializeObject(Model)*/ id = Model.Id, current = Model.CurrentPrice }, new AjaxOptions
+
+@using (Ajax.BeginForm("DetailsPartial", new {id = Model.Id, current = Model.CurrentPrice }, new AjaxOptions
 {
     UpdateTargetId = "bidding",
     LoadingElementId = "loading",
@@ -20,15 +20,36 @@
     <table class="table">
         <tr>
             <td>
+                <h2>@Model.Name</h2>
+            </td>
+            @{
+                if (Model.TimeLeft > new TimeSpan(0) &&
+                    (User.IsInRole("admin") || User.Identity.GetUserId() == Model.SellerId))
+                {
+                    <td>
+                        <p>
+                            <h4>@Html.ActionLink("Edit", "Edit", new { id = Model.Id })</h4>
+                        </p>
+                    </td>
+                    <td>
+                        <p>
+                            <h4>@Html.ActionLink("Delete", "Delete", new { id = Model.Id })</h4>
+                        </p>
+                    </td>
+                }
+            }
+        </tr>
+        <tr>
+            <td>
                 @{
-        if (Model.Image != null)
-        {
-            <img src="data:image/png;base64,@Convert.ToBase64String(Model.Image, 0, Model.Image.Length)" style="max-height:360px; max-width:640px" />
-}
-else
-{
-            <img src="@Url.Content("~/Content/no_image.png")" style="max-height:360px; max-width:640px" />
-}
+                    if (Model.Image != null)
+                    {
+                        <img src="data:image/png;base64,@Convert.ToBase64String(Model.Image, 0, Model.Image.Length)" style="max-height:360px; max-width:640px" />
+                    }
+                    else
+                    {
+                        <img src="@Url.Content("~/Content/no_image.png")" style="max-height:360px; max-width:640px" />
+                    }
                 }
             </td>
             <td>
@@ -48,24 +69,17 @@ else
             </td>
             <td>
                 <div>
-                    <p>
                         @{
-        if (User.IsInRole("admin") || User.Identity.GetUserId() == Model.SellerId)
-        {
-                                <p>
-                    @Html.ActionLink("Edit", "Edit", new { id = Model.Id })
-                                    </p>
-                                    <p>
-                    @Html.ActionLink("Delete", "Delete", new { id = Model.Id })
-                                        </p>
-}
-else
-{
-                    <h4>Seller:</h4>
-                    @Html.ActionLink(Model.SellerNickname, "UserProfile", "Account", new { id = Model.SellerId }, null)
-}
+                            if(User.Identity.GetUserId() != Model.SellerId)
+                            {
+                                <h4>Seller:</h4>
+                                @Html.ActionLink(Model.SellerNickname, "UserProfile", "Account", new { id = Model.SellerId }, null)
+                            }
+                            else
+                            {
+                                <h4>You are a proud seller of this lot</h4>
+                            }
                         }
-                    </p>
                 </div>
             </td>
         </tr>

@@ -101,17 +101,16 @@ namespace Auction.WEB.Controllers
             return View(model);
         }
 
-        public ActionResult MyProfile()
+        [Authorize]
+        public async Task<ActionResult> UserProfile(string id)
         {
-            return RedirectToAction("UserProfile", new { userName = User.Identity.Name });
-        }
-
-        public async Task<ActionResult> UserProfile(string userName)
-        {
-            var user = await UserService.GetUserByIdAsync(userName);
+            if (id == null)
+                return HttpNotFound();
+            var user = await UserService.GetUserByIdAsync(id);
             if (user == null)
-                user = new UserDTO() { Nickname = "Unknown", Email = "Unknown@m.m", CreditCardNumber = "Unknown" };
-            return View(new ProfileViewModel() { Nickname = user.Nickname, Email = user.Email, CreditCardNumber = user.CreditCardNumber });
+                return HttpNotFound();
+
+            return View(new ProfileViewModel() { Id = user.Id, Nickname = user.Nickname, Email = user.Email, CreditCardNumber = user.CreditCardNumber });
         }
     }
 }

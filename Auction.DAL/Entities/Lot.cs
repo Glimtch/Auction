@@ -19,12 +19,23 @@ namespace Auction.DAL.Entities
         public DateTime ExpireDate { get; set; }
         public bool WasBidOn { get; set; }
         public virtual Bid CurrentBid { get; set; }
-        public bool IsSold
+        public LotState State
         {
             get
             {
-                return (WasBidOn && DateTime.Now > ExpireDate);
+                if (DateTime.Now < ExpireDate)
+                    return LotState.Active;
+                if (WasBidOn)
+                    return LotState.Sold;
+                return LotState.Expired;
             }
         }
+    }
+
+    public enum LotState
+    {
+        Active,
+        Expired,
+        Sold
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Auction.BLL.DTOs;
+using Auction.BLL.Exceptions;
 using Auction.BLL.Infrastructure;
 using Auction.BLL.Interfaces;
 using Auction.DAL.Entities;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Auction.BLL.Services
 {
-    public delegate void LotDateExpiringDelegate(object sender, EventArgs e);
+    public delegate void LotDateExpiringDelegate(object sender, ExpiredLotEventArgs e);
 
     public class LotsService : ILotsService
     {
@@ -22,39 +23,97 @@ namespace Auction.BLL.Services
             db = uow;
         }
 
-        public event LotDateExpiringDelegate LotDateExpiring;
-
-        public async Task CreateOrUpdateLotAsync(LotDTO lotDto)
+        /// <summary>
+        /// Invokes when a lot's time expires.
+        /// </summary>
+        public event LotDateExpiringDelegate LotDateExpiring = null;
+        
+        /// <summary>
+        /// Creates a lot, if it does not exist.
+        /// </summary>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException"></exception>
+        public async Task CreateLotAsync(LotDTO lotDto)
         {
             if (lotDto == null)
-                throw new Exception ("Lot provided was null value");
-            var (lot, bid) = LotAndBidFromLotDto(lotDto);
-            db.Lots.Update(lot);
+                throw new ArgumentNullException("Lot provided was null value");
+            if (lotDto.Name == null || lotDto.SellerId == null || lotDto.StartPrice < 1 || lotDto.StartPrice > 500000 || lotDto.ExpireDate < DateTime.Now)
+                throw new ArgumentException("Invalid lot info provided");
+            var (lot, bid) = LotsMapper.LotAndBidFromLotDto(lotDto);
+            db.Lots.Add(lot);
             await db.SaveAsync();
         }
-        
+
+        /// <summary>
+        /// Updates a lot, if it exists.
+        /// </summary>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="NotFoundException"></exception>
+        /// <exception cref="ExpiredException"></exception>
+        public async Task UpdateLotAsync(LotDTO lotDto)
+        {
+            if (lotDto == null)
+                throw new ArgumentNullException ("Lot provided was null value");
+            if (lotDto.Name == null || lotDto.SellerId == null)
+                throw new ArgumentException("Invalid lot provided");
+            var lot = await db.Lots.GetByIdAsync(lotDto.Id);
+            if (lot == null)
+                throw new NotFoundException("No lot with current id exists in database");
+            if (lot.State != LotState.Active)
+            {
+                LotDateExpiring?.Invoke(this, new ExpiredLotEventArgs(lot));
+                throw new ExpiredException("Lot's time has expired. It cannot be changed anymore");
+            }
+            var (newLot, bid) = LotsMapper.LotAndBidFromLotDto(lotDto);
+            db.Lots.Update(newLot);
+            await db.SaveAsync();
+        }
+
+        /// <summary>
+        /// Returns all active lots.
+        /// </summary>
+        /// <exception cref="ArgumentNullException"></exception>
         public async Task<IEnumerable<LotDTO>> GetAllActiveLotsAsync()
         {
             return await SearchActiveLotsAsync("");
         }
 
+        /// <summary>
+        /// Returns all active lots with provided pattern.
+        /// </summary>
+        /// <exception cref="ArgumentNullException"></exception>
         public async Task<IEnumerable<LotDTO>> SearchActiveLotsAsync(string pattern)
         {
+            if (pattern == null)
+                throw new ArgumentNullException("Pattern provided was null value");
             var lotDtos = new List<LotDTO>();
             await Task.Run(() =>
             {
-                var lots = db.Lots.GetAll().Where(l => l.Name.Contains(pattern) && l.ExpireDate > DateTime.Now);
+                var lots = db.Lots.GetAll().Where(l => l.Name.Contains(pattern));
                 foreach (var lot in lots)
                 {
-                    lotDtos.Add(LotDtoFromLot(lot));
+                    if (lot.State != LotState.Active)
+                        LotDateExpiring?.Invoke(this, new ExpiredLotEventArgs(lot));
+                    else
+                        lotDtos.Add(LotsMapper.LotDtoFromLot(lot));
                 }
             });
             return lotDtos;
         }
 
+        /// <summary>
+        /// Return a lot by id if it exists.
+        /// </summary>
+        /// <exception cref="NotFoundException"></exception>
         public async Task<LotDTO> GetLotByIdAsync(int id)
         {
-            return LotDtoFromLot(await db.Lots.GetByIdAsync(id));
+            var lot = await db.Lots.GetByIdAsync(id);
+            if(lot == null)
+                throw new NotFoundException("No lot with current id exists in database");
+            if (lot.State != LotState.Active)
+                LotDateExpiring?.Invoke(this, new ExpiredLotEventArgs(lot));
+            return LotsMapper.LotDtoFromLot(lot);
         }
 
         public async Task<IEnumerable<LotDTO>> GetLotsByBidderAsync(UserDTO user)
@@ -72,24 +131,41 @@ namespace Auction.BLL.Services
             throw new NotImplementedException();
         }
 
-        public async Task<LotDTO> UpdateBidAsync(int lotId, decimal newPrice, string bidderId)
+        /// <summary>
+        /// Sets a new bid on a lot.
+        /// </summary>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="NotFoundException"></exception>
+        /// <exception cref="ExpiredException"></exception>
+        /// <param name="lotId">Id of a lot a bid will be placed on.</param>
+        /// <param name="newPrice">New price bid.</param>
+        /// <param name="bidderId">Id of a user that will be set as a new high bidder.</param>
+        public async Task UpdateBidAsync(int lotId, decimal newPrice, string bidderId)
         {
-            var lot = await db.Lots.GetByIdAsync(lotId);
-            if (lot == null)
-                throw new ArgumentException("A lot with current id does not exist");
-            if (lot.WasBidOn &&
-                newPrice <= (await db.Bids.GetByIdAsync(lot.Id)).BidPrice)
-                throw new Exception("Cannot perform a bid with price lower than current");
             if (string.IsNullOrEmpty(bidderId))
                 throw new ArgumentNullException("Bidder id provided was null value");
+            var lot = await db.Lots.GetByIdAsync(lotId);
+            if (lot == null)
+                throw new NotFoundException("A lot with current id does not exist");
+            if (lot.WasBidOn &&
+                newPrice <= lot.CurrentBid.BidPrice)
+                throw new ArgumentException("Cannot perform a bid with price lower than current");
+            if (lot.State != LotState.Active)
+            {
+                LotDateExpiring?.Invoke(this, new ExpiredLotEventArgs(lot));
+                throw new ExpiredException("Lot's time has expired. It cannot be bid on anymore");
+            }
             var bid = new Bid() { Id = lotId, BidPrice = newPrice, BidderId = bidderId };
             lot.WasBidOn = true;
             db.Lots.Update(lot);
             db.Bids.Update(bid);
             await db.SaveAsync();
-            return LotDtoFromLot(lot);
         }
 
+        /// <summary>
+        /// Delets a lot if it exists.
+        /// </summary>
         public async Task DeleteLotAsync(int id)
         {
             db.Lots.Delete(id);
@@ -99,35 +175,6 @@ namespace Auction.BLL.Services
         public void Dispose()
         {
             db.Dispose();
-        }
-
-        private LotDTO LotDtoFromLot(Lot lot)
-        {
-            if (lot == null)
-                return null;
-            var lotDto = new LotDTO() { Id = lot.Id, Name = lot.Name, Description = lot.Description, Image = lot.Image, ExpireDate = lot.ExpireDate, SellerId = lot.SellerId, StartPrice = lot.StartPrice, IsSold = lot.IsSold };
-            if (lot.WasBidOn)
-            {
-                lotDto.CurrentPrice = lot.CurrentBid.BidPrice;
-                lotDto.BidderId = lot.CurrentBid.BidderId;
-            }
-            else
-            {
-                lotDto.CurrentPrice = lot.StartPrice;
-            }
-            return lotDto;
-        }
-
-        private (Lot lot, Bid bid) LotAndBidFromLotDto(LotDTO lotDto)
-        {
-            Lot lot = new Lot() { Id = lotDto.Id, Name = lotDto.Name, Description = lotDto.Description, Image = lotDto.Image, ExpireDate = lotDto.ExpireDate, StartPrice = lotDto.StartPrice, SellerId = lotDto.SellerId };
-            Bid bid = null;
-            if (lotDto.BidderId != null)
-            {
-                bid = new Bid() { Id = lotDto.Id, BidderId = lotDto.BidderId, BidPrice = lotDto.CurrentPrice };
-                lot.WasBidOn = true;
-            }
-            return (lot, bid);
         }
     }
 }

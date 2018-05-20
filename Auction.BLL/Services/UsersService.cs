@@ -45,6 +45,8 @@ namespace Auction.BLL.Services
 
         public async Task<ClaimsIdentity> AuthenticateAsync(UserDTO userDto)
         {
+            if(userDto == null)
+                throw new ArgumentNullException("User provided was null value");
             ClaimsIdentity claim = null;
             AuctionUser user = await db.UserManager.FindAsync(userDto.Email, userDto.Password);
             if (user != null)

@@ -27,7 +27,7 @@ namespace Auction.DAL.EF
             Property(l => l.Image).HasColumnType("varbinary");
             Property(l => l.StartPrice).IsRequired().HasColumnType("money");
             Property(l => l.ExpireDate).IsRequired();
-            Ignore(l => l.IsSold);
+            Ignore(l => l.State);
         }
     }
 

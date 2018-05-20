@@ -1,10 +1,21 @@
-﻿@model Auction.WEB.Models.ProfileViewModel
+﻿@using Microsoft.AspNet.Identity;
+
+@model Auction.WEB.Models.ProfileViewModel
 
 @{
     ViewBag.Title = "UserProfile";
 }
 
-<h2>My Profile</h2>
+@{ 
+    if(Model.Id == User.Identity.GetUserId())
+    {
+        <h2>My profile</h2>
+    }
+    else
+    {
+        <h2>@Model.Nickname.Split(' ').First()'s profile</h2>
+    }
+}
 
 <div>
     <dl class="dl-horizontal">
