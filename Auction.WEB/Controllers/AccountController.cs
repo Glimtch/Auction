@@ -114,6 +114,7 @@ namespace Auction.WEB.Controllers
         {
             if (id == null)
                 return HttpNotFound();
+<<<<<<< HEAD
             try
             {
                 var user = await UserService.GetUserByIdAsync(id);
@@ -139,11 +140,22 @@ namespace Auction.WEB.Controllers
                     SoldLots = sold,
                     WonBids = won
                 });
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 4b36963e151b0fddd8b58bef31cd33b7709a6b58
+            try
+            {
+                var user = await UserService.GetUserByIdAsync(id);
+                return View(new ProfileViewModel() { Id = user.Id, Nickname = user.Nickname, Email = user.Email, CreditCardNumber = user.CreditCardNumber });
+>>>>>>> 330f767868bac6b464127496d52c68aeb23560ed
             }
             catch(UsersManagementException)
             {
                 return HttpNotFound();
             }
+<<<<<<< HEAD
         }
 
         [HttpPost]
@@ -176,6 +188,18 @@ namespace Auction.WEB.Controllers
                 ViewBag.Message = e;
             }
             return RedirectToAction("UserProfile", new { id = id });
+=======
+<<<<<<< HEAD
+=======
+=======
+            var user = await UserService.GetUserByIdAsync(id);
+            if (user == null)
+                return HttpNotFound();
+
+            return View(new ProfileViewModel() { Id = user.Id, Nickname = user.Nickname, Email = user.Email, CreditCardNumber = user.CreditCardNumber });
+>>>>>>> 4fb9aa43f112ff5d2bc9808fd6c9d29d451dc7eb
+>>>>>>> 4b36963e151b0fddd8b58bef31cd33b7709a6b58
+>>>>>>> 330f767868bac6b464127496d52c68aeb23560ed
         }
     }
 }

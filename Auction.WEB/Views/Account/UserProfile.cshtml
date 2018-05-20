@@ -6,8 +6,13 @@
     ViewBag.Title = "UserProfile";
 }
 
+<<<<<<< HEAD
 @{
     if (Model.Id == User.Identity.GetUserId())
+=======
+@{ 
+    if(Model.Id == User.Identity.GetUserId())
+>>>>>>> 330f767868bac6b464127496d52c68aeb23560ed
     {
         <h2>My profile</h2>
     }

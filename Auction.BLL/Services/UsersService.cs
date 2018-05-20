@@ -47,6 +47,10 @@ namespace Auction.BLL.Services
                 await db.UserManager.AddToRoleAsync(user.Id, role);
             }
             await db.SaveAsync();
+<<<<<<< HEAD
+=======
+
+>>>>>>> 330f767868bac6b464127496d52c68aeb23560ed
         }
 
         /// <summary>
@@ -60,7 +64,20 @@ namespace Auction.BLL.Services
         public async Task<ClaimsIdentity> AuthenticateAsync(UserDTO userDto)
         {
             if(userDto == null)
+<<<<<<< HEAD
                 throw new ArgumentNullException("User provided was null value");;
+=======
+<<<<<<< HEAD
+                throw new ArgumentNullException("User provided was null value");;
+=======
+<<<<<<< HEAD
+                throw new ArgumentNullException("User provided was null value");;
+=======
+                throw new ArgumentNullException("User provided was null value");
+            ClaimsIdentity claim = null;
+>>>>>>> 4fb9aa43f112ff5d2bc9808fd6c9d29d451dc7eb
+>>>>>>> 4b36963e151b0fddd8b58bef31cd33b7709a6b58
+>>>>>>> 330f767868bac6b464127496d52c68aeb23560ed
             AuctionUser user = await db.UserManager.FindAsync(userDto.Email, userDto.Password);
             if (user == null)
                 throw new UsersManagementException("A user with current login and password does not exist");
@@ -79,6 +96,7 @@ namespace Auction.BLL.Services
             var user = await db.UserManager.FindByIdAsync(id);
             if (user == null)
                 throw new UsersManagementException("A user with current id does not exist");
+<<<<<<< HEAD
             var sold = new List<LotDTO>();
             var won = new List<LotDTO>();
             foreach(var lot in user.Lots)
@@ -93,10 +111,14 @@ namespace Auction.BLL.Services
             }
             return new UserDTO()
             {
+=======
+            return new UserDTO() {
+>>>>>>> 330f767868bac6b464127496d52c68aeb23560ed
                 Id = user.Id,
                 Nickname = user.Nickname,
                 CreditCardNumber = user.CreditCardNumber,
                 Email = user.Email,
+<<<<<<< HEAD
                 Roles = db.UserManager.GetRoles(user.Id),
                 SoldLots = sold,
                 WonBids = won
@@ -123,6 +145,9 @@ namespace Auction.BLL.Services
             await db.UserManager.AddToRoleAsync(id, newRole);
             await db.UserManager.RemoveFromRoleAsync(id, oldRole);
             await db.SaveAsync();
+=======
+                Roles = db.UserManager.GetRoles(user.Id) };
+>>>>>>> 330f767868bac6b464127496d52c68aeb23560ed
         }
 
         public void Dispose()

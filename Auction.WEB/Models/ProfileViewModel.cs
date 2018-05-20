@@ -9,7 +9,10 @@ namespace Auction.WEB.Models
     public class ProfileViewModel
     {
         public string Id { get; set; }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 330f767868bac6b464127496d52c68aeb23560ed
         public string Nickname { get; set; }
         public string Email { get; set; }
         [Display(Name = "Credit card")]

@@ -15,7 +15,19 @@ namespace Auction.BLL.Interfaces
         /// <summary>
         /// Return a lot by id if it exists.
         /// </summary>
+<<<<<<< HEAD
         /// <exception cref="LotsManagementException"></exception>
+=======
+<<<<<<< HEAD
+        /// <exception cref="LotsManagementException"></exception>
+=======
+<<<<<<< HEAD
+        /// <exception cref="LotsManagementException"></exception>
+=======
+        /// <exception cref="NotFoundException"></exception>
+>>>>>>> 4fb9aa43f112ff5d2bc9808fd6c9d29d451dc7eb
+>>>>>>> 4b36963e151b0fddd8b58bef31cd33b7709a6b58
+>>>>>>> 330f767868bac6b464127496d52c68aeb23560ed
         Task<LotDTO> GetLotByIdAsync(int id);
 
         /// <summary>
@@ -23,7 +35,18 @@ namespace Auction.BLL.Interfaces
         /// </summary>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
+<<<<<<< HEAD
         /// <exception cref="LotsManagementException"></exception>
+=======
+<<<<<<< HEAD
+        /// <exception cref="LotsManagementException"></exception>
+=======
+<<<<<<< HEAD
+        /// <exception cref="LotsManagementException"></exception>
+=======
+>>>>>>> 4fb9aa43f112ff5d2bc9808fd6c9d29d451dc7eb
+>>>>>>> 4b36963e151b0fddd8b58bef31cd33b7709a6b58
+>>>>>>> 330f767868bac6b464127496d52c68aeb23560ed
         Task CreateLotAsync(LotDTO lotDto);
 
         /// <summary>
@@ -31,7 +54,19 @@ namespace Auction.BLL.Interfaces
         /// </summary>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
+<<<<<<< HEAD
         /// <exception cref="LotsManagementException"></exception>
+=======
+<<<<<<< HEAD
+        /// <exception cref="LotsManagementException"></exception>
+=======
+<<<<<<< HEAD
+        /// <exception cref="LotsManagementException"></exception>
+=======
+        /// <exception cref="NotFoundException"></exception>
+>>>>>>> 4fb9aa43f112ff5d2bc9808fd6c9d29d451dc7eb
+>>>>>>> 4b36963e151b0fddd8b58bef31cd33b7709a6b58
+>>>>>>> 330f767868bac6b464127496d52c68aeb23560ed
         /// <exception cref="ExpiredException"></exception>
         Task UpdateLotAsync(LotDTO lotDto);
 
@@ -40,7 +75,19 @@ namespace Auction.BLL.Interfaces
         /// </summary>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
+<<<<<<< HEAD
         /// <exception cref="LotsManagementException"></exception>
+=======
+<<<<<<< HEAD
+        /// <exception cref="LotsManagementException"></exception>
+=======
+<<<<<<< HEAD
+        /// <exception cref="LotsManagementException"></exception>
+=======
+        /// <exception cref="NotFoundException"></exception>
+>>>>>>> 4fb9aa43f112ff5d2bc9808fd6c9d29d451dc7eb
+>>>>>>> 4b36963e151b0fddd8b58bef31cd33b7709a6b58
+>>>>>>> 330f767868bac6b464127496d52c68aeb23560ed
         /// <exception cref="ExpiredException"></exception>
         /// <param name="lotId">Id of a lot a bid will be placed on.</param>
         /// <param name="newPrice">New price bid.</param>
@@ -67,5 +114,19 @@ namespace Auction.BLL.Interfaces
         /// Delets a lot if it exists.
         /// </summary>
         Task DeleteLotAsync(int id);
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+
+        /// <summary>
+        /// Invokes when a lot's time expires.
+        /// </summary>
+        event LotDateExpiringDelegate LotDateExpiring;
+>>>>>>> 4fb9aa43f112ff5d2bc9808fd6c9d29d451dc7eb
+>>>>>>> 4b36963e151b0fddd8b58bef31cd33b7709a6b58
+>>>>>>> 330f767868bac6b464127496d52c68aeb23560ed
     }
 }
