@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Auction.DAL.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,8 +17,9 @@ namespace Auction.BLL.DTOs
         public decimal StartPrice { get; set; }
         public decimal CurrentPrice { get; set; }
         public string SellerId { get; set; }
+        public string SellerNickname { get; set; }
         public DateTime ExpireDate { get; set; }
         public string BidderId { get; set; }
-        public bool IsSold { get; set; }
+        public string BidderNickname { get; set; }
     }
 }
