@@ -111,8 +111,17 @@
     <Compile Include="DTOs\LotDTO.cs" />
     <Compile Include="DTOs\UserDTO.cs" />
     <Compile Include="Exceptions\ExpiredException.cs" />
+<<<<<<< HEAD
     <Compile Include="Exceptions\LotsManagementException.cs" />
     <Compile Include="Exceptions\UsersManagementException.cs" />
+=======
+<<<<<<< HEAD
+    <Compile Include="Exceptions\LotsManagementException.cs" />
+    <Compile Include="Exceptions\UsersManagementException.cs" />
+=======
+    <Compile Include="Exceptions\NotFoundException.cs" />
+>>>>>>> 4fb9aa43f112ff5d2bc9808fd6c9d29d451dc7eb
+>>>>>>> 4b36963e151b0fddd8b58bef31cd33b7709a6b58
     <Compile Include="ExpiredLotEventArgs.cs" />
     <Compile Include="Infrastructure\ServicesModule.cs" />
     <Compile Include="Infrastructure\OperationDetails.cs" />

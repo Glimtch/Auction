@@ -27,6 +27,10 @@ namespace Auction.BLL.Services
         }
 
         /// <summary>
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 4b36963e151b0fddd8b58bef31cd33b7709a6b58
         /// Is invoked when a lot's time expires.
         /// </summary>
         internal event LotDateExpiringDelegate LotDateExpiring = null;
@@ -48,6 +52,27 @@ namespace Auction.BLL.Services
                 throw new LotsManagementException("A lot with current id already exists");
             var (newLot, bid) = LotsMapper.LotAndBidFromLotDto(lotDto);
             db.Lots.Add(newLot);
+<<<<<<< HEAD
+=======
+=======
+        /// Invokes when a lot's time expires.
+        /// </summary>
+        public event LotDateExpiringDelegate LotDateExpiring = null;
+        
+        /// <summary>
+        /// Creates a lot, if it does not exist.
+        /// </summary>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException"></exception>
+        public async Task CreateLotAsync(LotDTO lotDto)
+        {
+            if (lotDto == null)
+                throw new ArgumentNullException("Lot provided was null value");
+            if (lotDto.Name == null || lotDto.SellerId == null || lotDto.StartPrice < 1 || lotDto.StartPrice > 500000 || lotDto.ExpireDate < DateTime.Now)
+                throw new ArgumentException("Invalid lot info provided");
+            var (lot, bid) = LotsMapper.LotAndBidFromLotDto(lotDto);
+            db.Lots.Add(lot);
+>>>>>>> 4b36963e151b0fddd8b58bef31cd33b7709a6b58
             await db.SaveAsync();
         }
 
@@ -56,6 +81,37 @@ namespace Auction.BLL.Services
         /// </summary>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
+<<<<<<< HEAD
+=======
+        /// <exception cref="NotFoundException"></exception>
+        /// <exception cref="ExpiredException"></exception>
+        public async Task UpdateLotAsync(LotDTO lotDto)
+        {
+            if (lotDto == null)
+                throw new ArgumentNullException ("Lot provided was null value");
+            if (lotDto.Name == null || lotDto.SellerId == null)
+                throw new ArgumentException("Invalid lot provided");
+            var lot = await db.Lots.GetByIdAsync(lotDto.Id);
+            if (lot == null)
+                throw new NotFoundException("No lot with current id exists in database");
+            if (lot.State != LotState.Active)
+            {
+                LotDateExpiring?.Invoke(this, new ExpiredLotEventArgs(lot));
+                throw new ExpiredException("Lot's time has expired. It cannot be changed anymore");
+            }
+            var (newLot, bid) = LotsMapper.LotAndBidFromLotDto(lotDto);
+            db.Lots.Update(newLot);
+>>>>>>> 4fb9aa43f112ff5d2bc9808fd6c9d29d451dc7eb
+            await db.SaveAsync();
+        }
+
+        /// <summary>
+<<<<<<< HEAD
+        /// Updates a lot, if it exists.
+        /// </summary>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException"></exception>
+>>>>>>> 4b36963e151b0fddd8b58bef31cd33b7709a6b58
         /// <exception cref="LotsManagementException"></exception>
         /// <exception cref="ExpiredException"></exception>
         public async Task UpdateLotAsync(LotDTO lotDto)
@@ -78,6 +134,11 @@ namespace Auction.BLL.Services
         }
 
         /// <summary>
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> 4fb9aa43f112ff5d2bc9808fd6c9d29d451dc7eb
+>>>>>>> 4b36963e151b0fddd8b58bef31cd33b7709a6b58
         /// Returns all active lots.
         /// </summary>
         /// <exception cref="ArgumentNullException"></exception>
@@ -112,12 +173,28 @@ namespace Auction.BLL.Services
         /// <summary>
         /// Return a lot by id if it exists.
         /// </summary>
+<<<<<<< HEAD
         /// <exception cref="LotsManagementException"></exception>
+=======
+<<<<<<< HEAD
+        /// <exception cref="LotsManagementException"></exception>
+=======
+        /// <exception cref="NotFoundException"></exception>
+>>>>>>> 4fb9aa43f112ff5d2bc9808fd6c9d29d451dc7eb
+>>>>>>> 4b36963e151b0fddd8b58bef31cd33b7709a6b58
         public async Task<LotDTO> GetLotByIdAsync(int id)
         {
             var lot = await db.Lots.GetByIdAsync(id);
             if(lot == null)
+<<<<<<< HEAD
                 throw new LotsManagementException("A lot with current id does not exist");
+=======
+<<<<<<< HEAD
+                throw new LotsManagementException("A lot with current id does not exist");
+=======
+                throw new NotFoundException("No lot with current id exists in database");
+>>>>>>> 4fb9aa43f112ff5d2bc9808fd6c9d29d451dc7eb
+>>>>>>> 4b36963e151b0fddd8b58bef31cd33b7709a6b58
             if (lot.State != LotState.Active)
                 LotDateExpiring?.Invoke(this, new ExpiredLotEventArgs(lot));
             return LotsMapper.LotDtoFromLot(lot);
@@ -143,7 +220,15 @@ namespace Auction.BLL.Services
         /// </summary>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
+<<<<<<< HEAD
         /// <exception cref="LotsManagementException"></exception>
+=======
+<<<<<<< HEAD
+        /// <exception cref="LotsManagementException"></exception>
+=======
+        /// <exception cref="NotFoundException"></exception>
+>>>>>>> 4fb9aa43f112ff5d2bc9808fd6c9d29d451dc7eb
+>>>>>>> 4b36963e151b0fddd8b58bef31cd33b7709a6b58
         /// <exception cref="ExpiredException"></exception>
         /// <param name="lotId">Id of a lot a bid will be placed on.</param>
         /// <param name="newPrice">New price bid.</param>
@@ -154,7 +239,15 @@ namespace Auction.BLL.Services
                 throw new ArgumentNullException("Bidder id provided was null value");
             var lot = await db.Lots.GetByIdAsync(lotId);
             if (lot == null)
+<<<<<<< HEAD
                 throw new LotsManagementException("A lot with current id does not exist");
+=======
+<<<<<<< HEAD
+                throw new LotsManagementException("A lot with current id does not exist");
+=======
+                throw new NotFoundException("A lot with current id does not exist");
+>>>>>>> 4fb9aa43f112ff5d2bc9808fd6c9d29d451dc7eb
+>>>>>>> 4b36963e151b0fddd8b58bef31cd33b7709a6b58
             if (lot.WasBidOn &&
                 newPrice <= lot.CurrentBid.BidPrice)
                 throw new ArgumentException("Cannot perform a bid with price lower than current");

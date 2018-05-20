@@ -113,6 +113,10 @@ namespace Auction.WEB.Controllers
         {
             if (id == null)
                 return HttpNotFound();
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 4b36963e151b0fddd8b58bef31cd33b7709a6b58
             try
             {
                 var user = await UserService.GetUserByIdAsync(id);
@@ -122,6 +126,16 @@ namespace Auction.WEB.Controllers
             {
                 return HttpNotFound();
             }
+<<<<<<< HEAD
+=======
+=======
+            var user = await UserService.GetUserByIdAsync(id);
+            if (user == null)
+                return HttpNotFound();
+
+            return View(new ProfileViewModel() { Id = user.Id, Nickname = user.Nickname, Email = user.Email, CreditCardNumber = user.CreditCardNumber });
+>>>>>>> 4fb9aa43f112ff5d2bc9808fd6c9d29d451dc7eb
+>>>>>>> 4b36963e151b0fddd8b58bef31cd33b7709a6b58
         }
     }
 }

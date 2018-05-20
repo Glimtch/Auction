@@ -62,8 +62,17 @@
                 (Model.SellerId == User.Identity.GetUserId() || User.IsInRole("admin")))
             {
                 <p>
+<<<<<<< HEAD
                     <h4>Buyer:</h4>
                     @Html.ActionLink(Model.BidderNickname, "UserProfile", "Account", new { id = Model.BidderId }, null)
+=======
+<<<<<<< HEAD
+                    <h4>Buyer:</h4>
+                    @Html.ActionLink(Model.BidderNickname, "UserProfile", "Account", new { id = Model.BidderId }, null)
+=======
+                    @Html.ActionLink("Check out buyer's page", "UserProfile", "Account", new { id = Model.BidderId }, null);
+>>>>>>> 4fb9aa43f112ff5d2bc9808fd6c9d29d451dc7eb
+>>>>>>> 4b36963e151b0fddd8b58bef31cd33b7709a6b58
                 </p>
             }
         }
