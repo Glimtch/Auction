@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Auction.BLL.Services
 {
+<<<<<<< HEAD
     /// <summary>
     /// Provides functionality for mapping between Auction.DAL.Entities.Lot and Auction.BLL.DTOs.LotDTO.
     /// </summary>
@@ -16,16 +17,27 @@ namespace Auction.BLL.Services
         /// <summary>
         /// Creates a new LotDTO object from provided Lot object.
         /// </summary>
+=======
+    public static class LotsMapper
+    {
+>>>>>>> 4fb9aa43f112ff5d2bc9808fd6c9d29d451dc7eb
         internal static LotDTO LotDtoFromLot(Lot lot)
         {
             if (lot == null)
                 return null;
+<<<<<<< HEAD
             var lotDto = new LotDTO() { Id = lot.Id, Name = lot.Name, Description = lot.Description, Image = lot.Image, ExpireDate = lot.ExpireDate, SellerId = lot.SellerId, SellerNickname = lot.Seller.Nickname, StartPrice = lot.StartPrice };
+=======
+            var lotDto = new LotDTO() { Id = lot.Id, Name = lot.Name, Description = lot.Description, Image = lot.Image, ExpireDate = lot.ExpireDate, SellerId = lot.SellerId, StartPrice = lot.StartPrice };
+>>>>>>> 4fb9aa43f112ff5d2bc9808fd6c9d29d451dc7eb
             if (lot.WasBidOn)
             {
                 lotDto.CurrentPrice = lot.CurrentBid.BidPrice;
                 lotDto.BidderId = lot.CurrentBid.BidderId;
+<<<<<<< HEAD
                 lotDto.BidderNickname = lot.CurrentBid.Bidder.Nickname;
+=======
+>>>>>>> 4fb9aa43f112ff5d2bc9808fd6c9d29d451dc7eb
             }
             else
             {
@@ -34,9 +46,12 @@ namespace Auction.BLL.Services
             return lotDto;
         }
 
+<<<<<<< HEAD
         /// <summary>
         /// Creates a new Lot object and a Bid if exists from provided LotDTO object.
         /// </summary>
+=======
+>>>>>>> 4fb9aa43f112ff5d2bc9808fd6c9d29d451dc7eb
         internal static (Lot lot, Bid bid) LotAndBidFromLotDto(LotDTO lotDto)
         {
             if (lotDto == null)

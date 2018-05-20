@@ -20,6 +20,9 @@ namespace Auction.BLL.DTOs
         public string SellerNickname { get; set; }
         public DateTime ExpireDate { get; set; }
         public string BidderId { get; set; }
+<<<<<<< HEAD
         public string BidderNickname { get; set; }
+=======
+>>>>>>> 4fb9aa43f112ff5d2bc9808fd6c9d29d451dc7eb
     }
 }

@@ -15,7 +15,11 @@ namespace Auction.BLL.Interfaces
         /// <summary>
         /// Return a lot by id if it exists.
         /// </summary>
+<<<<<<< HEAD
         /// <exception cref="LotsManagementException"></exception>
+=======
+        /// <exception cref="NotFoundException"></exception>
+>>>>>>> 4fb9aa43f112ff5d2bc9808fd6c9d29d451dc7eb
         Task<LotDTO> GetLotByIdAsync(int id);
 
         /// <summary>
@@ -23,7 +27,10 @@ namespace Auction.BLL.Interfaces
         /// </summary>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
+<<<<<<< HEAD
         /// <exception cref="LotsManagementException"></exception>
+=======
+>>>>>>> 4fb9aa43f112ff5d2bc9808fd6c9d29d451dc7eb
         Task CreateLotAsync(LotDTO lotDto);
 
         /// <summary>
@@ -31,7 +38,11 @@ namespace Auction.BLL.Interfaces
         /// </summary>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
+<<<<<<< HEAD
         /// <exception cref="LotsManagementException"></exception>
+=======
+        /// <exception cref="NotFoundException"></exception>
+>>>>>>> 4fb9aa43f112ff5d2bc9808fd6c9d29d451dc7eb
         /// <exception cref="ExpiredException"></exception>
         Task UpdateLotAsync(LotDTO lotDto);
 
@@ -40,7 +51,11 @@ namespace Auction.BLL.Interfaces
         /// </summary>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
+<<<<<<< HEAD
         /// <exception cref="LotsManagementException"></exception>
+=======
+        /// <exception cref="NotFoundException"></exception>
+>>>>>>> 4fb9aa43f112ff5d2bc9808fd6c9d29d451dc7eb
         /// <exception cref="ExpiredException"></exception>
         /// <param name="lotId">Id of a lot a bid will be placed on.</param>
         /// <param name="newPrice">New price bid.</param>
@@ -67,5 +82,13 @@ namespace Auction.BLL.Interfaces
         /// Delets a lot if it exists.
         /// </summary>
         Task DeleteLotAsync(int id);
+<<<<<<< HEAD
+=======
+
+        /// <summary>
+        /// Invokes when a lot's time expires.
+        /// </summary>
+        event LotDateExpiringDelegate LotDateExpiring;
+>>>>>>> 4fb9aa43f112ff5d2bc9808fd6c9d29d451dc7eb
     }
 }
