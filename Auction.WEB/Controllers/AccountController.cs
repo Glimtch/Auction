@@ -114,6 +114,10 @@ namespace Auction.WEB.Controllers
         {
             if (id == null)
                 return HttpNotFound();
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 8d169e5693621b36e5ac124313ffe2c4964d930b
             try
             {
                 var user = await UserService.GetUserByIdAsync(id);
@@ -139,11 +143,31 @@ namespace Auction.WEB.Controllers
                     SoldLots = sold,
                     WonBids = won
                 });
+<<<<<<< HEAD
+=======
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 4b36963e151b0fddd8b58bef31cd33b7709a6b58
+            try
+            {
+                var user = await UserService.GetUserByIdAsync(id);
+                return View(new ProfileViewModel() { Id = user.Id, Nickname = user.Nickname, Email = user.Email, CreditCardNumber = user.CreditCardNumber });
+>>>>>>> 330f767868bac6b464127496d52c68aeb23560ed
+>>>>>>> 8d169e5693621b36e5ac124313ffe2c4964d930b
             }
             catch(UsersManagementException)
             {
                 return HttpNotFound();
             }
+<<<<<<< HEAD
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> SetToAdmin(string id)
+=======
+<<<<<<< HEAD
         }
 
         [HttpPost]
@@ -153,6 +177,24 @@ namespace Auction.WEB.Controllers
                 return HttpNotFound();
             try
             {
+                await UserService.ChangeUserRole(id, "user", "admin");
+            }
+            catch(UsersManagementException e)
+            {
+                ViewBag.Message = e;
+            }
+            return RedirectToAction("UserProfile", new { id = id });
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> SetToUser(string id)
+>>>>>>> 8d169e5693621b36e5ac124313ffe2c4964d930b
+        {
+            if (id == null)
+                return HttpNotFound();
+            try
+            {
+<<<<<<< HEAD
                 await UserService.ChangeUserRoleAsync(id, "user", "admin");
             }
             catch(UsersManagementException e)
@@ -170,12 +212,30 @@ namespace Auction.WEB.Controllers
             try
             {
                 await UserService.ChangeUserRoleAsync(id, "admin", "user");
+=======
+                await UserService.ChangeUserRole(id, "admin", "user");
+>>>>>>> 8d169e5693621b36e5ac124313ffe2c4964d930b
             }
             catch (UsersManagementException e)
             {
                 ViewBag.Message = e;
             }
             return RedirectToAction("UserProfile", new { id = id });
+<<<<<<< HEAD
+=======
+=======
+<<<<<<< HEAD
+=======
+=======
+            var user = await UserService.GetUserByIdAsync(id);
+            if (user == null)
+                return HttpNotFound();
+
+            return View(new ProfileViewModel() { Id = user.Id, Nickname = user.Nickname, Email = user.Email, CreditCardNumber = user.CreditCardNumber });
+>>>>>>> 4fb9aa43f112ff5d2bc9808fd6c9d29d451dc7eb
+>>>>>>> 4b36963e151b0fddd8b58bef31cd33b7709a6b58
+>>>>>>> 330f767868bac6b464127496d52c68aeb23560ed
+>>>>>>> 8d169e5693621b36e5ac124313ffe2c4964d930b
         }
     }
 }

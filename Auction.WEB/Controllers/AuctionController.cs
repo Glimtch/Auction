@@ -10,7 +10,22 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Auction.BLL.Exceptions;
+<<<<<<< HEAD
 using Auction.WEB.Services;
+=======
+<<<<<<< HEAD
+using Auction.WEB.Services;
+=======
+<<<<<<< HEAD
+using Auction.WEB.Services;
+=======
+<<<<<<< HEAD
+using Auction.WEB.Services;
+=======
+>>>>>>> 4fb9aa43f112ff5d2bc9808fd6c9d29d451dc7eb
+>>>>>>> 4b36963e151b0fddd8b58bef31cd33b7709a6b58
+>>>>>>> 330f767868bac6b464127496d52c68aeb23560ed
+>>>>>>> 8d169e5693621b36e5ac124313ffe2c4964d930b
 
 namespace Auction.WEB.Controllers
 {
@@ -39,7 +54,23 @@ namespace Auction.WEB.Controllers
             var lots = new List<DetailedLotViewModel>();
             foreach (var lotDto in lotDtos)
             {
+<<<<<<< HEAD
                 lots.Add(LotViewModelsMapper.DetailedLotFromLotDTO(lotDto));
+=======
+<<<<<<< HEAD
+                lots.Add(LotViewModelsMapper.DetailedLotFromLotDTO(lotDto));
+=======
+<<<<<<< HEAD
+                lots.Add(LotViewModelsMapper.DetailedLotFromLotDTO(lotDto));
+=======
+<<<<<<< HEAD
+                lots.Add(LotViewModelsMapper.DetailedLotFromLotDTO(lotDto));
+=======
+                lots.Add(await DetailedLotFromLotDTO(lotDto));
+>>>>>>> 4fb9aa43f112ff5d2bc9808fd6c9d29d451dc7eb
+>>>>>>> 4b36963e151b0fddd8b58bef31cd33b7709a6b58
+>>>>>>> 330f767868bac6b464127496d52c68aeb23560ed
+>>>>>>> 8d169e5693621b36e5ac124313ffe2c4964d930b
             }
             return PartialView(lots);
         }
@@ -83,6 +114,7 @@ namespace Auction.WEB.Controllers
             {
                 ModelState.AddModelError("ExpireDate", "Expire date and time must be more than 24 hours from now");
                 return View();
+<<<<<<< HEAD
             }
             try
             {
@@ -98,6 +130,63 @@ namespace Auction.WEB.Controllers
             }
             catch(Exception e) when (e is ArgumentException || e is LotsManagementException)
             {
+=======
+<<<<<<< HEAD
+            }
+            try
+            {
+                await lotsService.CreateLotAsync(new LotDTO()
+                {
+                    Name = lot.Name,
+                    Description = lot.Description,
+                    Image = lot.Image,
+                    StartPrice = lot.StartPrice,
+                    SellerId = User.Identity.GetUserId(),
+                    ExpireDate = expire
+                });
+            }
+            catch(Exception e) when (e is ArgumentException || e is LotsManagementException)
+            {
+=======
+<<<<<<< HEAD
+            }
+            try
+            {
+                await lotsService.CreateLotAsync(new LotDTO()
+                {
+                    Name = lot.Name,
+                    Description = lot.Description,
+                    Image = lot.Image,
+                    StartPrice = lot.StartPrice,
+                    SellerId = User.Identity.GetUserId(),
+                    ExpireDate = expire
+                });
+            }
+            catch(Exception e) when (e is ArgumentException || e is LotsManagementException)
+            {
+=======
+            }
+            try
+            {
+                await lotsService.CreateLotAsync(new LotDTO()
+                {
+                    Name = lot.Name,
+                    Description = lot.Description,
+                    Image = lot.Image,
+                    StartPrice = lot.StartPrice,
+                    SellerId = User.Identity.GetUserId(),
+                    ExpireDate = expire
+                });
+            }
+<<<<<<< HEAD
+            catch(Exception e) when (e is ArgumentException || e is LotsManagementException)
+=======
+            await lotsService.CreateLotAsync(new LotDTO()
+>>>>>>> 4fb9aa43f112ff5d2bc9808fd6c9d29d451dc7eb
+            {
+>>>>>>> 4b36963e151b0fddd8b58bef31cd33b7709a6b58
+>>>>>>> 330f767868bac6b464127496d52c68aeb23560ed
+>>>>>>> 8d169e5693621b36e5ac124313ffe2c4964d930b
                 ModelState.AddModelError("", e.Message);
                 return View();
             }
@@ -109,6 +198,7 @@ namespace Auction.WEB.Controllers
         {
             if (id == null)
                 return HttpNotFound();
+<<<<<<< HEAD
             try
             {
                 var lotDto = await lotsService.GetLotByIdAsync((int)id);
@@ -123,6 +213,68 @@ namespace Auction.WEB.Controllers
             {
                 return HttpNotFound();
             }
+=======
+<<<<<<< HEAD
+            try
+            {
+                var lotDto = await lotsService.GetLotByIdAsync((int)id);
+                if (lotDto.ExpireDate < DateTime.Now &&
+                    lotDto.BidderId != User.Identity.GetUserId() &&
+                    lotDto.SellerId != User.Identity.GetUserId() &&
+                    !User.IsInRole("admin"))
+                    return HttpNotFound();
+                return View(LotViewModelsMapper.DetailedLotFromLotDTO(lotDto));
+            }
+            catch (LotsManagementException)
+            {
+                return HttpNotFound();
+            }
+=======
+<<<<<<< HEAD
+            try
+            {
+                var lotDto = await lotsService.GetLotByIdAsync((int)id);
+                if (lotDto.ExpireDate < DateTime.Now &&
+                    lotDto.BidderId != User.Identity.GetUserId() &&
+                    lotDto.SellerId != User.Identity.GetUserId() &&
+                    !User.IsInRole("admin"))
+                    return HttpNotFound();
+                return View(LotViewModelsMapper.DetailedLotFromLotDTO(lotDto));
+            }
+            catch (LotsManagementException)
+            {
+                return HttpNotFound();
+            }
+=======
+<<<<<<< HEAD
+            try
+            {
+                var lotDto = await lotsService.GetLotByIdAsync((int)id);
+                if (lotDto.ExpireDate < DateTime.Now &&
+                    lotDto.BidderId != User.Identity.GetUserId() &&
+                    lotDto.SellerId != User.Identity.GetUserId() &&
+                    !User.IsInRole("admin"))
+                    return HttpNotFound();
+                return View(LotViewModelsMapper.DetailedLotFromLotDTO(lotDto));
+            }
+            catch (LotsManagementException)
+            {
+                return HttpNotFound();
+            }
+=======
+            var lotDto = await lotsService.GetLotByIdAsync((int)id);
+            if (lotDto == null)
+                return HttpNotFound();
+            if(lotDto.ExpireDate < DateTime.Now &&
+                lotDto.BidderId != User.Identity.GetUserId() &&
+                lotDto.SellerId != User.Identity.GetUserId() &&
+                !User.IsInRole("admin"))
+                return HttpNotFound();
+            return View(await DetailedLotFromLotDTO(lotDto));
+>>>>>>> 4fb9aa43f112ff5d2bc9808fd6c9d29d451dc7eb
+>>>>>>> 4b36963e151b0fddd8b58bef31cd33b7709a6b58
+>>>>>>> 330f767868bac6b464127496d52c68aeb23560ed
+>>>>>>> 8d169e5693621b36e5ac124313ffe2c4964d930b
         }
 
         [HttpPost]
@@ -132,6 +284,44 @@ namespace Auction.WEB.Controllers
             try
             {
                 if (bid == null || bid <= current)
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 4b36963e151b0fddd8b58bef31cd33b7709a6b58
+>>>>>>> 330f767868bac6b464127496d52c68aeb23560ed
+>>>>>>> 8d169e5693621b36e5ac124313ffe2c4964d930b
+                {
+                    ModelState.AddModelError("", "Bid price must be more than current");
+                }
+                else if (bid > 1000000)
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 8d169e5693621b36e5ac124313ffe2c4964d930b
+                {
+                    ModelState.AddModelError("", "Bid price cannot be higher than $1'000'000");
+                }
+                else
+<<<<<<< HEAD
+                {
+=======
+                {
+=======
+>>>>>>> 330f767868bac6b464127496d52c68aeb23560ed
+                {
+                    ModelState.AddModelError("", "Bid price cannot be higher than $1'000'000");
+                }
+                else
+                {
+<<<<<<< HEAD
+=======
+=======
                 {
                     ModelState.AddModelError("", "Bid price must be more than current");
                 }
@@ -141,18 +331,48 @@ namespace Auction.WEB.Controllers
                 }
                 else
                 {
+>>>>>>> 4fb9aa43f112ff5d2bc9808fd6c9d29d451dc7eb
+>>>>>>> 4b36963e151b0fddd8b58bef31cd33b7709a6b58
+>>>>>>> 330f767868bac6b464127496d52c68aeb23560ed
+>>>>>>> 8d169e5693621b36e5ac124313ffe2c4964d930b
                     try
                     {
                         await lotsService.UpdateBidAsync(id, (decimal)bid, User.Identity.GetUserId());
                         ViewBag.Message = "Bid successfuly made!";
                     }
+<<<<<<< HEAD
                     catch (LotsManagementException)
+=======
+<<<<<<< HEAD
+                    catch (LotsManagementException)
+=======
+<<<<<<< HEAD
+                    catch (LotsManagementException)
+=======
+<<<<<<< HEAD
+                    catch (LotsManagementException)
+=======
+                    catch (NotFoundException)
+>>>>>>> 4fb9aa43f112ff5d2bc9808fd6c9d29d451dc7eb
+>>>>>>> 4b36963e151b0fddd8b58bef31cd33b7709a6b58
+>>>>>>> 330f767868bac6b464127496d52c68aeb23560ed
+>>>>>>> 8d169e5693621b36e5ac124313ffe2c4964d930b
                     {
                         return HttpNotFound();
                     }
                 }
             }
             catch (ExpiredException e)
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 4b36963e151b0fddd8b58bef31cd33b7709a6b58
+>>>>>>> 330f767868bac6b464127496d52c68aeb23560ed
+>>>>>>> 8d169e5693621b36e5ac124313ffe2c4964d930b
             {
                 ViewBag.Message = e.Message;
             }
@@ -165,6 +385,25 @@ namespace Auction.WEB.Controllers
                 ModelState.AddModelError("", e.Message);
             }
             return PartialView("DetailsPartial", LotViewModelsMapper.DetailedLotFromLotDTO(lotDto));
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+=======
+            {
+                ViewBag.Message = e.Message;
+            }
+            finally
+            {
+                lotDto = await lotsService.GetLotByIdAsync(id);
+            }
+            return PartialView("DetailsPartial", await DetailedLotFromLotDTO(lotDto));
+>>>>>>> 4fb9aa43f112ff5d2bc9808fd6c9d29d451dc7eb
+>>>>>>> 4b36963e151b0fddd8b58bef31cd33b7709a6b58
+>>>>>>> 330f767868bac6b464127496d52c68aeb23560ed
+>>>>>>> 8d169e5693621b36e5ac124313ffe2c4964d930b
         }
 
         [Authorize]
@@ -172,6 +411,16 @@ namespace Auction.WEB.Controllers
         {
             if (id == null)
                 return HttpNotFound();
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 4b36963e151b0fddd8b58bef31cd33b7709a6b58
+>>>>>>> 330f767868bac6b464127496d52c68aeb23560ed
+>>>>>>> 8d169e5693621b36e5ac124313ffe2c4964d930b
             try
             {
                 var lotDto = await lotsService.GetLotByIdAsync((int)id);
@@ -183,6 +432,23 @@ namespace Auction.WEB.Controllers
             {
                 return HttpNotFound();
             }
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+=======
+            var lotDto = await lotsService.GetLotByIdAsync((int)id);
+            if(lotDto == null)
+                return HttpNotFound();
+            if (!User.IsInRole("admin") && User.Identity.GetUserId() != lotDto.SellerId)
+                return RedirectToActionPermanent("Details", new { id = id });
+            return View(await DetailedLotFromLotDTO(lotDto));
+>>>>>>> 4fb9aa43f112ff5d2bc9808fd6c9d29d451dc7eb
+>>>>>>> 4b36963e151b0fddd8b58bef31cd33b7709a6b58
+>>>>>>> 330f767868bac6b464127496d52c68aeb23560ed
+>>>>>>> 8d169e5693621b36e5ac124313ffe2c4964d930b
         }
 
         [HttpPost]
@@ -212,6 +478,16 @@ namespace Auction.WEB.Controllers
                 lot.Image = data;
             }
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 4b36963e151b0fddd8b58bef31cd33b7709a6b58
+>>>>>>> 330f767868bac6b464127496d52c68aeb23560ed
+>>>>>>> 8d169e5693621b36e5ac124313ffe2c4964d930b
             try
             {
                 await lotsService.UpdateLotAsync(LotViewModelsMapper.LotDTOFromDetailedLot(lot));
@@ -222,6 +498,18 @@ namespace Auction.WEB.Controllers
                 return View(lot);
             }
             catch (ExpiredException) { }
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+=======
+            await lotsService.UpdateLotAsync(LotDTOFromDetailedLot(lot));
+>>>>>>> 4fb9aa43f112ff5d2bc9808fd6c9d29d451dc7eb
+>>>>>>> 4b36963e151b0fddd8b58bef31cd33b7709a6b58
+>>>>>>> 330f767868bac6b464127496d52c68aeb23560ed
+>>>>>>> 8d169e5693621b36e5ac124313ffe2c4964d930b
             return RedirectToAction("Details", new { id = lot.Id });
         }
 
@@ -230,6 +518,16 @@ namespace Auction.WEB.Controllers
         {
             if(id == null)
                 return HttpNotFound();
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 4b36963e151b0fddd8b58bef31cd33b7709a6b58
+>>>>>>> 330f767868bac6b464127496d52c68aeb23560ed
+>>>>>>> 8d169e5693621b36e5ac124313ffe2c4964d930b
             try
             {
                 var lotDto = await lotsService.GetLotByIdAsync((int)id);
@@ -241,6 +539,23 @@ namespace Auction.WEB.Controllers
             {
                 return HttpNotFound();
             }
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+=======
+            var lotDto = await lotsService.GetLotByIdAsync((int)id);
+            if (lotDto == null)
+                return HttpNotFound();
+            if (!User.IsInRole("admin") && User.Identity.GetUserId() != lotDto.SellerId)
+                return RedirectToActionPermanent("Details", new { id = id });
+            return View( await DetailedLotFromLotDTO(lotDto));
+>>>>>>> 4fb9aa43f112ff5d2bc9808fd6c9d29d451dc7eb
+>>>>>>> 4b36963e151b0fddd8b58bef31cd33b7709a6b58
+>>>>>>> 330f767868bac6b464127496d52c68aeb23560ed
+>>>>>>> 8d169e5693621b36e5ac124313ffe2c4964d930b
         }
 
         [HttpPost, ActionName("Delete")]
@@ -248,6 +563,49 @@ namespace Auction.WEB.Controllers
         {
             await lotsService.DeleteLotAsync(id);
             return RedirectToAction("Index");
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+        }
+
+
+        private LotDTO LotDTOFromDetailedLot(DetailedLotViewModel lot)
+        {
+            return new LotDTO()
+            {
+                Id = lot.Id,
+                Name = lot.Name,
+                Description = lot.Description,
+                Image = lot.Image,
+                StartPrice = lot.StartPrice,
+                SellerId = lot.SellerId,
+                ExpireDate = lot.ExpireDate,
+                BidderId = lot.BidderId,
+                CurrentPrice = lot.CurrentPrice
+            };
+        }
+
+        private async Task<DetailedLotViewModel> DetailedLotFromLotDTO(LotDTO lotDto)
+        {
+            return new DetailedLotViewModel()
+            {
+                Id = lotDto.Id,
+                Name = lotDto.Name,
+                Description = lotDto.Description,
+                Image = lotDto.Image,
+                StartPrice = lotDto.StartPrice,
+                SellerId = lotDto.SellerId,
+                SellerNickname = (await usersService.GetUserByIdAsync(lotDto.SellerId)).Nickname,
+                CurrentPrice = lotDto.CurrentPrice,
+                ExpireDate = lotDto.ExpireDate,
+                BidderId = lotDto.BidderId
+            };
+>>>>>>> 4b36963e151b0fddd8b58bef31cd33b7709a6b58
+>>>>>>> 330f767868bac6b464127496d52c68aeb23560ed
+>>>>>>> 8d169e5693621b36e5ac124313ffe2c4964d930b
         }
     }
 }

@@ -196,7 +196,15 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Infrastructure\CreditCardNumberAttribute.cs" />
+<<<<<<< HEAD
     <Compile Include="Services\LotViewModelsMapper.cs" />
+=======
+<<<<<<< HEAD
+    <Compile Include="Services\LotViewModelsMapper.cs" />
+=======
+    <Compile Include="Services\LotsMapper.cs" />
+>>>>>>> 330f767868bac6b464127496d52c68aeb23560ed
+>>>>>>> 8d169e5693621b36e5ac124313ffe2c4964d930b
     <Compile Include="Models\DetailedLotViewModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
     <Compile Include="Models\ProfileViewModel.cs" />
@@ -261,7 +269,14 @@
     <Content Include="Views\Auction\Edit.cshtml" />
     <Content Include="Views\Auction\Delete.cshtml" />
     <Content Include="Views\Error\NotFound.cshtml" />
+<<<<<<< HEAD
     <Content Include="Views\Account\UserProfilePartial.cshtml" />
+=======
+<<<<<<< HEAD
+    <Content Include="Views\Account\UserProfilePartial.cshtml" />
+=======
+>>>>>>> 330f767868bac6b464127496d52c68aeb23560ed
+>>>>>>> 8d169e5693621b36e5ac124313ffe2c4964d930b
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

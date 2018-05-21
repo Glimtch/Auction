@@ -41,6 +41,10 @@ namespace Auction.BLL.Interfaces
         /// </summary>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="UsersManagementException"></exception>
+<<<<<<< HEAD
         Task ChangeUserRoleAsync(string id, string oldRole, string newRole);
+=======
+        Task ChangeUserRole(string id, string oldRole, string newRole);
+>>>>>>> 8d169e5693621b36e5ac124313ffe2c4964d930b
     }
 }

@@ -48,6 +48,13 @@ namespace Auction.BLL.Services
                 await db.UserManager.AddToRoleAsync(user.Id, role);
             }
             await db.SaveAsync();
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+
+>>>>>>> 330f767868bac6b464127496d52c68aeb23560ed
+>>>>>>> 8d169e5693621b36e5ac124313ffe2c4964d930b
         }
 
         /// <summary>
@@ -61,7 +68,24 @@ namespace Auction.BLL.Services
         public async Task<ClaimsIdentity> AuthenticateAsync(UserDTO userDto)
         {
             if(userDto == null)
+<<<<<<< HEAD
                 throw new ArgumentNullException("User provided was null value");;
+=======
+<<<<<<< HEAD
+                throw new ArgumentNullException("User provided was null value");;
+=======
+<<<<<<< HEAD
+                throw new ArgumentNullException("User provided was null value");;
+=======
+<<<<<<< HEAD
+                throw new ArgumentNullException("User provided was null value");;
+=======
+                throw new ArgumentNullException("User provided was null value");
+            ClaimsIdentity claim = null;
+>>>>>>> 4fb9aa43f112ff5d2bc9808fd6c9d29d451dc7eb
+>>>>>>> 4b36963e151b0fddd8b58bef31cd33b7709a6b58
+>>>>>>> 330f767868bac6b464127496d52c68aeb23560ed
+>>>>>>> 8d169e5693621b36e5ac124313ffe2c4964d930b
             AuctionUser user = await db.UserManager.FindAsync(userDto.Email, userDto.Password);
             if (user == null)
                 throw new UsersManagementException("A user with current login and password does not exist");
@@ -81,6 +105,7 @@ namespace Auction.BLL.Services
             var wonBids = new List<LotDTO>();
             var user = await db.UserManager.FindByIdAsync(id);
             if (user == null)
+<<<<<<< HEAD
                 throw new UsersManagementException("A user with provided id does not exist");
             await Task.Run(() =>
             {
@@ -106,13 +131,41 @@ namespace Auction.BLL.Services
             }
             return new UserDTO()
             {
+=======
+                throw new UsersManagementException("A user with current id does not exist");
+<<<<<<< HEAD
+            var sold = new List<LotDTO>();
+            var won = new List<LotDTO>();
+            foreach(var lot in user.Lots)
+            {
+                if (lot.State == LotState.Sold)
+                    sold.Add(LotDTOsMapper.LotDtoFromLot(lot));
+            }
+            foreach(var bid in user.Bids)
+            {
+                if(bid.Lot.State == LotState.Sold)
+                    won.Add(LotDTOsMapper.LotDtoFromLot(bid.Lot));
+            }
+            return new UserDTO()
+            {
+=======
+            return new UserDTO() {
+>>>>>>> 330f767868bac6b464127496d52c68aeb23560ed
+>>>>>>> 8d169e5693621b36e5ac124313ffe2c4964d930b
                 Id = user.Id,
                 Nickname = user.Nickname,
                 CreditCardNumber = user.CreditCardNumber,
                 Email = user.Email,
+<<<<<<< HEAD
                 Roles = db.UserManager.GetRoles(user.Id),
                 SoldLots = soldLots,
                 WonBids = wonBids
+=======
+<<<<<<< HEAD
+                Roles = db.UserManager.GetRoles(user.Id),
+                SoldLots = sold,
+                WonBids = won
+>>>>>>> 8d169e5693621b36e5ac124313ffe2c4964d930b
             };
         }
 
@@ -121,12 +174,19 @@ namespace Auction.BLL.Services
         /// </summary>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="UsersManagementException"></exception>
+<<<<<<< HEAD
         public async Task ChangeUserRoleAsync(string id, string oldRole, string newRole)
         {
             if (id == null)
                 throw new ArgumentNullException("Id provided was null value");
             if (string.IsNullOrEmpty(oldRole) || string.IsNullOrEmpty(newRole))
                 throw new ArgumentNullException("One or more roles provided was null value");
+=======
+        public async Task ChangeUserRole(string id, string oldRole, string newRole)
+        {
+            if (id == null)
+                throw new ArgumentNullException("Id provided was null value");
+>>>>>>> 8d169e5693621b36e5ac124313ffe2c4964d930b
             var user = await db.UserManager.FindByIdAsync(id);
             if (user == null)
                 throw new UsersManagementException("A user with current id does not exist");
@@ -138,6 +198,12 @@ namespace Auction.BLL.Services
             await db.UserManager.AddToRoleAsync(id, newRole);
             await db.UserManager.RemoveFromRoleAsync(id, oldRole);
             await db.SaveAsync();
+<<<<<<< HEAD
+=======
+=======
+                Roles = db.UserManager.GetRoles(user.Id) };
+>>>>>>> 330f767868bac6b464127496d52c68aeb23560ed
+>>>>>>> 8d169e5693621b36e5ac124313ffe2c4964d930b
         }
 
         public void Dispose()
