@@ -1,10 +1,21 @@
-﻿@model Auction.WEB.Models.ProfileViewModel
+﻿@using Microsoft.AspNet.Identity;
+
+@model Auction.WEB.Models.ProfileViewModel
 
 @{
     ViewBag.Title = "UserProfile";
 }
 
-<h2>My Profile</h2>
+@{
+    if (Model.Id == User.Identity.GetUserId())
+    {
+        <h2>My profile</h2>
+    }
+    else
+    {
+        <h2>@Model.Nickname.Split(' ').First()'s profile</h2>
+    }
+}
 
 <div>
     <dl class="dl-horizontal">
@@ -34,3 +45,76 @@
 
     </dl>
 </div>
+@{
+    if (Model.Roles.Contains("admin"))
+    {
+        <p>
+            <h3 style="color:darkred">I'm an admin. Feel free to contact me if you need help.</h3>
+        </p>
+    }
+    if (Model.Roles.Contains("ceo"))
+    {
+        <p>
+            <h3 style="color:mediumaquamarine">I'm the ceo of (c)The Great Auction. Feel free to contact me if you have ideas how we can improve.</h3>
+        </p>
+    }
+    if (User.IsInRole("ceo") && Model.Roles.Count() == 1)
+    {
+        if (Model.Roles.Contains("admin"))
+        {
+            using (Html.BeginForm("SetToUser", "Account", new { id = Model.Id }, FormMethod.Post, null))
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-actions no-color">
+                    <p>
+                        <input type="submit" value="Kick out from admins" class="btn btn-default" />
+                    </p>
+                </div>
+            }
+        }
+
+        else if (Model.Roles.Contains("user"))
+        {
+            using (Html.BeginForm("SetToAdmin", "Account", new { id = Model.Id }, FormMethod.Post, null))
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-actions no-color">
+                    <p>
+                        <input type="submit" value="Raise to admin" class="btn btn-default" />
+                    </p>
+                </div>
+            }
+        }
+    }
+    if(ViewBag.Message != null)
+    {
+        <h4>@ViewBag.Message</h4>
+    }
+    if (Model.Roles.Contains("user"))
+    {
+        <table class="table">
+            <tr>
+                <td>
+                    <h3>Sold lots (@Model.SoldLots.Count in total):</h3>
+                </td>
+                <td></td>
+            </tr>
+            @Html.Partial("UserProfilePartial", Model.SoldLots)
+            <tr>
+                <td>
+                    <h3>Won bids (@Model.WonBids.Count in total):</h3>
+                </td>
+                <td></td>
+            </tr>
+            @Html.Partial("UserProfilePartial", Model.WonBids)
+        </table>
+    }
+}
+
+
+
+
+
+

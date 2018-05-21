@@ -110,11 +110,16 @@
   <ItemGroup>
     <Compile Include="DTOs\LotDTO.cs" />
     <Compile Include="DTOs\UserDTO.cs" />
+    <Compile Include="Exceptions\ExpiredException.cs" />
+    <Compile Include="Exceptions\LotsManagementException.cs" />
+    <Compile Include="Exceptions\UsersManagementException.cs" />
+    <Compile Include="ExpiredLotEventArgs.cs" />
     <Compile Include="Infrastructure\ServicesModule.cs" />
     <Compile Include="Infrastructure\OperationDetails.cs" />
     <Compile Include="Interfaces\ILotsService.cs" />
     <Compile Include="Interfaces\IUsersService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\LotDTOsMapper.cs" />
     <Compile Include="Services\LotsService.cs" />
     <Compile Include="Services\UsersService.cs" />
   </ItemGroup>
@@ -130,5 +135,6 @@
       <Name>Auction.DAL</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

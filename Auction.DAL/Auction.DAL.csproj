@@ -114,9 +114,9 @@
     <Compile Include="Entities\AuctionUser.cs" />
     <Compile Include="Entities\Bid.cs" />
     <Compile Include="Entities\Lot.cs" />
-    <Compile Include="Migrations\201805190955555_NewMigration.cs" />
-    <Compile Include="Migrations\201805190955555_NewMigration.Designer.cs">
-      <DependentUpon>201805190955555_NewMigration.cs</DependentUpon>
+    <Compile Include="Migrations\201805202258309_AuctionMigration.cs" />
+    <Compile Include="Migrations\201805202258309_AuctionMigration.Designer.cs">
+      <DependentUpon>201805202258309_AuctionMigration.cs</DependentUpon>
     </Compile>
     <Compile Include="Repositories\Identity\AuctionRoleManager.cs" />
     <Compile Include="Repositories\Identity\AuctionUserManager.cs" />
@@ -125,19 +125,18 @@
     <Compile Include="Interfaces\IRepository.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Repositories\AuctionUnitOfWork.cs" />
-    <Compile Include="Repositories\BidRepository.cs" />
-    <Compile Include="Repositories\IdentityUnitOfWork.cs" />
-    <Compile Include="Repositories\LotRepository.cs" />
-    <Compile Include="UnitsOfWorkModule.cs" />
+    <Compile Include="Repositories\Lots\AuctionUnitOfWork.cs" />
+    <Compile Include="Repositories\Lots\BidRepository.cs" />
+    <Compile Include="Repositories\Identity\IdentityUnitOfWork.cs" />
+    <Compile Include="Repositories\Lots\LotRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201805190955555_NewMigration.resx">
-      <DependentUpon>201805190955555_NewMigration.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201805202258309_AuctionMigration.resx">
+      <DependentUpon>201805202258309_AuctionMigration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

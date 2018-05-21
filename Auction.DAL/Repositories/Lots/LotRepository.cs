@@ -38,8 +38,7 @@ namespace Auction.DAL.Repositories
 
         public async Task<Lot> GetByIdAsync(int id)
         {
-            return await db.Lots.AsNoTracking().Where(l => l.Id == id).FirstOrDefaultAsync();
-            return await db.Lots.FindAsync(id);
+            return await db.Lots.AsNoTracking().Where(l => l.Id == id).Include(l => l.CurrentBid).Include(l => l.CurrentBid.Bidder).Include(l => l.Seller).FirstOrDefaultAsync();
         }
 
         public IQueryable<Lot> GetAll()
@@ -50,7 +49,6 @@ namespace Auction.DAL.Repositories
         public void Update(Lot entity)
         {
             db.Lots.AddOrUpdate(entity);
-            //db.Entry(entity).State = System.Data.Entity.EntityState.Modified;
         }
     }
 }

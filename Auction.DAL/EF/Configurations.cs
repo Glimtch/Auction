@@ -12,8 +12,8 @@ namespace Auction.DAL.EF
     {
         public AuctionUserConfig()
         {
-            HasMany(u => u.ActiveLots).WithRequired(l => l.Seller);
-            HasMany(u => u.ActiveBids).WithRequired(b => b.Bidder);
+            HasMany(u => u.Lots).WithRequired(l => l.Seller);
+            HasMany(u => u.Bids).WithRequired(b => b.Bidder);
             Property(u => u.Nickname).IsRequired();
             Property(u => u.CreditCardNumber).IsRequired();
         }
@@ -27,7 +27,7 @@ namespace Auction.DAL.EF
             Property(l => l.Image).HasColumnType("varbinary");
             Property(l => l.StartPrice).IsRequired().HasColumnType("money");
             Property(l => l.ExpireDate).IsRequired();
-            Ignore(l => l.IsSold);
+            Ignore(l => l.State);
         }
     }
 

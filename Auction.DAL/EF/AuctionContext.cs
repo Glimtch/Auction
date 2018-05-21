@@ -11,14 +11,22 @@ namespace Auction.DAL.EF
 {
     public class AuctionContext : IdentityDbContext<AuctionUser>
     {
-        public AuctionContext() : base("DefaultConnection") { }
+        public AuctionContext() : base("DefaultConnection")
+        {
+            this.Configuration.LazyLoadingEnabled = false;
+            this.Configuration.ProxyCreationEnabled = false;
+        }
 
-        public AuctionContext(string connectionString) : base(connectionString) { }
+        public AuctionContext(string connectionString) : base(connectionString)
+        {
+            this.Configuration.LazyLoadingEnabled = false;
+            this.Configuration.ProxyCreationEnabled = false;
+        }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
+            
             modelBuilder.Configurations.Add(new AuctionUserConfig());
             modelBuilder.Configurations.Add(new LotConfig());
             modelBuilder.Configurations.Add(new BidConfig());

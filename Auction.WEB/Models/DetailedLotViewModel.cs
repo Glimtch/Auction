@@ -48,5 +48,7 @@ namespace Auction.WEB.Models
         }
 
         public string BidderId { get; set; }
+
+        public string BidderNickname { get; set; }
     }
 }
