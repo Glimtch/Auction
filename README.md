@@ -1,19 +1,22 @@
 # The Great Auction
 
-summary:
+Summary:
 
-tests - mess;
-half of bll - not implemented;
-dal - doubtable stuff;
-pl - genius frontend (no);
-overall - 4/10.
+Use of onion layers architecture. 
+EF for DAL, ASP.NET MVC for WEB, Ninject for dependencies resolve.
 
-steps:
+Some of the stuff still not implemented.
+Have to follow these to make it work on a random pc for the first time.
 
-webconfig -> change datadirectory to app path/Auction.WEB/AppData;
+Steps:
+
+webconfig -> change datadirectory to /app path/Auction.WEB/AppData;
+
 90% chance ef messed up again so package manager console -> update-database (enable-migrations & add-migration "NewMigration" if needed);
+
 100% chance you cannot set everything how we need in code first so connect to created db, Lots table -> Image column -> change varbinary(8000) to varbinary(max);
-launch and hope it works on your pc coz its been a disaster for me.
+
+Launch.
 
 admin*
 login: killer@gmail.com
