@@ -1,4 +1,4 @@
-# Auction
+# The Great Auction
 
 summary:
 
