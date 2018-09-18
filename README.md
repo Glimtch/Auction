@@ -5,9 +5,9 @@ Summary:
 Use of onion layers architecture. 
 EF for DAL, ASP.NET MVC for WEB, Ninject for dependencies resolve.
 
-Some of the stuff still not implemented.
-Have to follow these to make it work on a random pc for the first time.
+Some of the stuff still not implemented (like unit tests).
 
+Have to follow these to make it work on a random pc for the first time.
 Steps:
 
 webconfig -> change datadirectory to /app path/Auction.WEB/AppData;
