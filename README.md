@@ -14,9 +14,11 @@ webconfig -> change datadirectory to /app path/Auction.WEB/AppData;
 
 90% chance ef messed up again so package manager console -> update-database (enable-migrations & add-migration "NewMigration" if needed);
 
-100% chance you cannot set everything how we need in code first so connect to created db, Lots table -> Image column -> change varbinary(8000) to varbinary(max);
+Sometimes you cannot set everything how we need in code first so connect to created db, Lots table -> Image column -> change varbinary(8000) to varbinary(max);
 
 Launch.
+
+Existing users:
 
 admin*
 login: killer@gmail.com
